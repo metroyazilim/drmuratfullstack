@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "blog": "Blog",
+    "team": "Our Team",
+    "gallery": "Gallery",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "appointment": "Book Appointment",
+    "corporate": "Corporate",
+    "media": "Media",
+    "mission": "Our Mission",
+    "vision": "Our Vision",
+    "quality": "Quality Policy",
+    "video": "Video Gallery"
+  },
+  "common": {
+    "appointment": "Book Appointment",
+    "readMore": "Read More",
+    "home": "Home",
+    "services": "Services",
+    "contact": "Contact",
+    "callNow": "Call Now",
+    "whatsapp": "Contact via WhatsApp"
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "English",
+    "ar": "العربية",
+    "ru": "Русский"
+  },
+  "a11y": {
+    "whatsapp": "Message on WhatsApp",
+    "phone": "Call by phone",
+    "menu": "Open menu",
+    "close": "Close",
+    "languageSwitcher": "Select language",
+    "breadcrumb": "Breadcrumb",
+    "footerNav": "Footer navigation",
+    "skipLink": "Skip to main content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "header": {
+    "appointmentCta": "Book Appointment",
+    "skipToContent": "Skip to content"
+  },
+  "footer": {
+    "corporate": "Corporate",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "newsletterTitle": "Stay informed",
+    "newsletterPlaceholder": "Your email address",
+    "newsletterSoon": "Newsletter sign-up is coming soon",
+    "newsletterSubmit": "Subscribe",
+    "rights": "All rights reserved."
+  },
+  "legal": {
+    "kvkk": "Data Protection",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "cta": {
+    "eyebrow": "APPOINTMENT",
+    "title": "Plan a personal assessment for your health and care goals.",
+    "description": "The appropriate treatment and session plan is determined individually after a physician assessment.",
+    "button": "Book Now"
+  },
+  "whatsapp": {
+    "message": "Hello, I am contacting you via drmuratirmak.com. I would like more information."
+  },
+  "disclaimer": {
+    "medical": "Suitability for medical treatments varies from person to person. This page is for general information only; diagnosis and treatment require a physician assessment.",
+    "title": "Please note"
+  },
+  "service": {
+    "detailEyebrow": "SERVICE DETAIL",
+    "allServices": "Our Services",
+    "quickAppointment": "Quick Appointment",
+    "relatedPosts": "Related articles",
+    "appointmentCta": "Book Appointment"
+  },
+  "blog": {
+    "cardLabel": "BLOG",
+    "publishedOn": "Published",
+    "updatedOn": "Updated",
+    "relatedServices": "Related services",
+    "recentPosts": "Recent Posts"
+  },
+  "team": {
+    "contactCta": "Get in Touch",
+    "eyebrow": "OUR TEAM"
+  },
+  "gallery": {
+    "close": "Close",
+    "previous": "Previous image",
+    "next": "Next image"
+  },
+  "video": {
+    "play": "Play video",
+    "close": "Close"
+  },
+  "page": {
+    "appointmentCta": "Book Appointment"
+  },
+  "mail": {
+    "fields": {
+      "fullName": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "preferredDate": "Preferred date",
+      "service": "Service of interest",
+      "message": "Message",
+      "otherService": "Not specified"
+    },
+    "appointment": {
+      "clinicSubject": "New appointment request",
+      "clinicTitle": "A new appointment request came from the website",
+      "userSubject": "Your appointment request was received",
+      "userTitle": "Your appointment request has reached us",
+      "userFooter": "Our clinic team will contact you shortly. For urgent matters: {phone}"
+    },
+    "contact": {
+      "clinicSubject": "New contact message",
+      "clinicTitle": "A new message came from the website",
+      "userSubject": "Your message was received",
+      "userTitle": "Your message has reached us",
+      "userFooter": "We will get back to you shortly. For urgent matters: {phone}"
+    }
+  },
+  "form": {
+    "required": "Required fields are marked with an asterisk (*).",
+    "submitting": "Sending…",
+    "successTitle": "Request received",
+    "successBody": "We will contact you shortly.",
+    "consentLabel": "I have read and accept the data protection and communication terms.",
+    "selectService": "Select the service you are interested in",
+    "otherService": "Other / Not sure",
+    "optional": "(optional)",
+    "errors": {
+      "validation": "Please correct the errors in the form.",
+      "rate_limit": "Too many submissions. Please try again later.",
+      "mail_failed": "Your request could not be sent right now. Please call us instead.",
+      "fullNameMin": "Full name must be at least 2 characters.",
+      "fullNameMax": "Full name is too long.",
+      "emailInvalid": "Enter a valid email address.",
+      "phoneInvalid": "Enter a valid phone number.",
+      "consentRequired": "You must give consent to continue.",
+      "preferredDateInvalid": "Select a valid date.",
+      "preferredDatePast": "A past date cannot be selected.",
+      "serviceIdRequired": "Please select a service.",
+      "messageMin": "Message must be at least 10 characters.",
+      "messageMax": "Message is too long."
+    },
+    "labels": {
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "preferredDate": "Preferred Date",
+      "service": "Service of Interest",
+      "message": "Your Message"
+    }
+  },
+  "cookie": {
+    "text": "This site only uses cookies that are necessary for it to function.",
+    "link": "Cookie policy",
+    "accept": "Got it"
+  },
+  "map": {
+    "directions": "Get directions"
+  },
+  "error": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you are looking for may have been moved or removed.",
+    "backHome": "Back to home",
+    "viewServices": "Explore services",
+    "genericTitle": "Something went wrong",
+    "genericBody": "An unexpected error occurred. You can try reloading the page.",
+    "retry": "Try again"
+  }
+}

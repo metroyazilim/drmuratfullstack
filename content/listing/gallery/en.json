@@ -1,0 +1,17 @@
+{
+  "seo": {
+    "title": "Photo Gallery",
+    "description": "Browse selected photographs of the treatment areas, clinical setting and care processes at Dr. Murat Irmak Clinic in Halkali, Istanbul before your visit.",
+    "ogImage": "/images/og/gallery.webp"
+  },
+  "banner": {
+    "title": "Photo Gallery",
+    "image": "/images/pages/gallery-banner.webp",
+    "imageAlt": "Photograph taken during a skin care treatment at the clinic"
+  },
+  "intro": {
+    "eyebrow": "GALLERY",
+    "title": "Selections from the clinic, treatments and care processes",
+    "description": "Selected frames from the clinical setting and treatment processes."
+  }
+}

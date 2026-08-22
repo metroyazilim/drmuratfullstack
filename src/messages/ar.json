@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "services": "الخدمات",
+    "blog": "المدونة",
+    "team": "فريقنا",
+    "gallery": "المعرض",
+    "faq": "الأسئلة الشائعة",
+    "contact": "اتصل بنا",
+    "appointment": "حجز موعد",
+    "corporate": "عن المؤسسة",
+    "media": "الوسائط",
+    "mission": "رسالتنا",
+    "vision": "رؤيتنا",
+    "quality": "سياسة الجودة",
+    "video": "معرض الفيديو"
+  },
+  "common": {
+    "appointment": "حجز موعد",
+    "readMore": "اقرأ المزيد",
+    "home": "الرئيسية",
+    "services": "الخدمات",
+    "contact": "اتصل بنا",
+    "callNow": "اتصل الآن",
+    "whatsapp": "تواصل عبر واتساب"
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "English",
+    "ar": "العربية",
+    "ru": "Русский"
+  },
+  "a11y": {
+    "whatsapp": "مراسلة عبر واتساب",
+    "phone": "الاتصال بالهاتف",
+    "menu": "فتح القائمة",
+    "close": "إغلاق",
+    "languageSwitcher": "اختر اللغة",
+    "breadcrumb": "مسار الصفحة",
+    "footerNav": "روابط التذييل",
+    "skipLink": "انتقل إلى المحتوى الرئيسي",
+    "openMenu": "افتح القائمة",
+    "closeMenu": "أغلق القائمة"
+  },
+  "header": {
+    "appointmentCta": "احجز موعداً",
+    "skipToContent": "انتقل إلى المحتوى"
+  },
+  "footer": {
+    "corporate": "عن المؤسسة",
+    "quickLinks": "روابط سريعة",
+    "contact": "اتصل بنا",
+    "newsletterTitle": "ابقَ على اطلاع",
+    "newsletterPlaceholder": "بريدك الإلكتروني",
+    "newsletterSoon": "التسجيل في النشرة البريدية سيتاح قريباً",
+    "newsletterSubmit": "اشترك",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "legal": {
+    "kvkk": "حماية البيانات",
+    "privacy": "الخصوصية",
+    "cookies": "ملفات تعريف الارتباط"
+  },
+  "cta": {
+    "eyebrow": "حجز موعد",
+    "title": "خطط لتقييم شخصي يناسب أهدافك الصحية والتجميلية.",
+    "description": "يتم تحديد الإجراء المناسب وعدد الجلسات بشكل فردي بعد تقييم الطبيب.",
+    "button": "احجز الآن"
+  },
+  "whatsapp": {
+    "message": "مرحباً، أتواصل معكم عبر موقع drmuratirmak.com وأرغب في الحصول على معلومات."
+  },
+  "disclaimer": {
+    "medical": "تختلف ملاءمة الإجراءات الطبية من شخص لآخر. هذه الصفحة لأغراض المعلومات العامة فقط؛ ويتطلب التشخيص والعلاج تقييماً من الطبيب.",
+    "title": "تنويه"
+  },
+  "service": {
+    "detailEyebrow": "تفاصيل الخدمة",
+    "allServices": "خدماتنا",
+    "quickAppointment": "حجز سريع",
+    "relatedPosts": "مقالات ذات صلة",
+    "appointmentCta": "احجز موعداً"
+  },
+  "blog": {
+    "cardLabel": "المدونة",
+    "publishedOn": "تاريخ النشر",
+    "updatedOn": "آخر تحديث",
+    "relatedServices": "خدمات ذات صلة",
+    "recentPosts": "أحدث المقالات"
+  },
+  "team": {
+    "contactCta": "تواصل معنا",
+    "eyebrow": "فريقنا"
+  },
+  "gallery": {
+    "close": "إغلاق",
+    "previous": "الصورة السابقة",
+    "next": "الصورة التالية"
+  },
+  "video": {
+    "play": "تشغيل الفيديو",
+    "close": "إغلاق"
+  },
+  "page": {
+    "appointmentCta": "احجز موعداً"
+  },
+  "mail": {
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "preferredDate": "التاريخ المفضل",
+      "service": "الخدمة المطلوبة",
+      "message": "الرسالة",
+      "otherService": "غير محدد"
+    },
+    "appointment": {
+      "clinicSubject": "طلب موعد جديد",
+      "clinicTitle": "ورد طلب موعد جديد من الموقع",
+      "userSubject": "تم استلام طلب موعدك",
+      "userTitle": "وصلنا طلب الموعد الخاص بك",
+      "userFooter": "سيتواصل معك فريق العيادة في أقرب وقت. للحالات العاجلة: {phone}"
+    },
+    "contact": {
+      "clinicSubject": "رسالة تواصل جديدة",
+      "clinicTitle": "وردت رسالة جديدة من الموقع",
+      "userSubject": "تم استلام رسالتك",
+      "userTitle": "وصلتنا رسالتك",
+      "userFooter": "سنعاود التواصل معك قريباً. للحالات العاجلة: {phone}"
+    }
+  },
+  "form": {
+    "required": "الحقول الإلزامية مميزة بعلامة نجمة (*).",
+    "submitting": "جارٍ الإرسال…",
+    "successTitle": "تم استلام طلبك",
+    "successBody": "سنتواصل معك في أقرب وقت.",
+    "consentLabel": "قرأت شروط حماية البيانات والتواصل وأوافق عليها.",
+    "selectService": "اختر الخدمة التي تهمك",
+    "otherService": "أخرى / لست متأكداً",
+    "optional": "(اختياري)",
+    "errors": {
+      "validation": "يرجى تصحيح الأخطاء في النموذج.",
+      "rate_limit": "عدد المحاولات كبير. يرجى المحاولة لاحقاً.",
+      "mail_failed": "تعذر إرسال طلبك الآن. يرجى الاتصال بنا هاتفياً.",
+      "fullNameMin": "يجب ألا يقل الاسم عن حرفين.",
+      "fullNameMax": "الاسم طويل جداً.",
+      "emailInvalid": "أدخل بريداً إلكترونياً صحيحاً.",
+      "phoneInvalid": "أدخل رقم هاتف صحيحاً.",
+      "consentRequired": "يجب الموافقة للمتابعة.",
+      "preferredDateInvalid": "اختر تاريخاً صحيحاً.",
+      "preferredDatePast": "لا يمكن اختيار تاريخ ماضٍ.",
+      "serviceIdRequired": "يرجى اختيار خدمة.",
+      "messageMin": "يجب ألا تقل الرسالة عن ١٠ أحرف.",
+      "messageMax": "الرسالة طويلة جداً."
+    },
+    "labels": {
+      "fullName": "الاسم الكامل",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "preferredDate": "التاريخ المفضل",
+      "service": "الخدمة التي تهمك",
+      "message": "رسالتك"
+    }
+  },
+  "cookie": {
+    "text": "يستخدم هذا الموقع ملفات تعريف الارتباط الضرورية لعمله فقط.",
+    "link": "سياسة ملفات تعريف الارتباط",
+    "accept": "حسناً"
+  },
+  "map": {
+    "directions": "احصل على الاتجاهات"
+  },
+  "error": {
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundBody": "ربما تكون الصفحة التي تبحث عنها قد نُقلت أو أُزيلت.",
+    "backHome": "العودة إلى الرئيسية",
+    "viewServices": "تصفح الخدمات",
+    "genericTitle": "حدث خطأ ما",
+    "genericBody": "حدث خطأ غير متوقع. يمكنك محاولة إعادة تحميل الصفحة.",
+    "retry": "حاول مجدداً"
+  }
+}

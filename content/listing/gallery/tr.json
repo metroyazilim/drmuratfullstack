@@ -1,0 +1,17 @@
+{
+  "seo": {
+    "title": "Resim Galerisi",
+    "description": "Dr. Murat Irmak Kliniği'nin uygulama alanları, klinik ortamı ve bakım süreçlerinden seçilmiş fotoğrafları inceleyin; klinik atmosferini yayına girmeden görün.",
+    "ogImage": "/images/og/gallery.webp"
+  },
+  "banner": {
+    "title": "Resim Galerisi",
+    "image": "/images/pages/gallery-banner.webp",
+    "imageAlt": "Klinikte cilt bakımı uygulaması sırasında çekilmiş fotoğraf"
+  },
+  "intro": {
+    "eyebrow": "GALERİ",
+    "title": "Klinik, uygulamalar ve bakım süreçlerinden seçkiler",
+    "description": "Klinik ortamı ve uygulama süreçlerinden seçilmiş kareler."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Our Team",
+    "description": "Meet the team at Dr. Murat Irmak Clinic, involved at every step of the clinical experience from appointment coordination to treatment and follow-up.",
+    "ogImage": "/images/og/team.webp"
+  },
+  "banner": {
+    "title": "Our Team",
+    "image": "/images/pages/team-banner.webp",
+    "imageAlt": "The team of Dr. Murat Irmak Clinic in the clinical setting"
+  },
+  "intro": {
+    "eyebrow": "TEAM",
+    "title": "With you at every step of the clinical experience.",
+    "description": "A coordinated team covering everything from the physician assessment to appointment and treatment organisation."
+  },
+  "approach": {
+    "items": [
+      {
+        "icon": "CalendarCheck",
+        "title": "Appointment coordination",
+        "description": "Scheduling a suitable date and time, with information shared before the visit."
+      },
+      {
+        "icon": "ShieldCheck",
+        "title": "Clinical preparation",
+        "description": "Preparing the pre-treatment steps in an orderly and safe manner."
+      },
+      {
+        "icon": "HeartPulse",
+        "title": "Follow-up support",
+        "description": "Keeping communication open during check-ups and aftercare."
+      }
+    ]
+  }
+}

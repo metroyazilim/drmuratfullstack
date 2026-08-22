@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımızda",
+    "services": "Hizmetlerimiz",
+    "blog": "Blog",
+    "team": "Ekibimiz",
+    "gallery": "Galeri",
+    "faq": "S.S.S.",
+    "contact": "İletişim",
+    "appointment": "Randevu Al",
+    "corporate": "Kurumsal",
+    "media": "Medya",
+    "mission": "Misyonumuz",
+    "vision": "Vizyonumuz",
+    "quality": "Kalite Politikamız",
+    "video": "Video Galerisi"
+  },
+  "common": {
+    "appointment": "Randevu Al",
+    "readMore": "Devamını Oku",
+    "home": "Ana Sayfa",
+    "services": "Hizmetlerimiz",
+    "contact": "İletişim",
+    "callNow": "Hemen Arayın",
+    "whatsapp": "WhatsApp ile İletişim"
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "English",
+    "ar": "العربية",
+    "ru": "Русский"
+  },
+  "a11y": {
+    "whatsapp": "WhatsApp'tan yazın",
+    "phone": "Telefonla arayın",
+    "menu": "Menüyü aç",
+    "close": "Kapat",
+    "languageSwitcher": "Dil seçiniz",
+    "breadcrumb": "Sayfa yolu",
+    "footerNav": "Alt menü",
+    "skipLink": "Ana içeriğe geç",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat"
+  },
+  "header": {
+    "appointmentCta": "Randevu Al",
+    "skipToContent": "İçeriğe geç"
+  },
+  "footer": {
+    "corporate": "Kurumsal",
+    "quickLinks": "Hızlı Linkler",
+    "contact": "İletişim",
+    "newsletterTitle": "Gelişmelerden haberdar olun",
+    "newsletterPlaceholder": "E-posta adresiniz",
+    "newsletterSoon": "Bülten kaydı yakında açılacak",
+    "newsletterSubmit": "Kaydol",
+    "rights": "Tüm hakları saklıdır."
+  },
+  "legal": {
+    "kvkk": "KVKK",
+    "privacy": "Gizlilik",
+    "cookies": "Çerezler"
+  },
+  "cta": {
+    "eyebrow": "RANDEVU",
+    "title": "Sağlığınız ve bakım hedefleriniz için kişisel bir değerlendirme planlayın.",
+    "description": "Uygun uygulama ve seans planı, hekim değerlendirmesi sonrasında kişiye özel olarak belirlenir.",
+    "button": "Randevu Oluştur"
+  },
+  "whatsapp": {
+    "message": "Merhaba, drmuratirmak.com üzerinden ulaşıyorum. Bilgi almak istiyorum."
+  },
+  "disclaimer": {
+    "medical": "Tıbbi uygulamalarda uygunluk kişiden kişiye değişir. Bu sayfa genel bilgilendirme amaçlıdır; tanı ve tedavi için hekim değerlendirmesi gerekir.",
+    "title": "Bilgilendirme"
+  },
+  "service": {
+    "detailEyebrow": "HİZMET DETAYI",
+    "allServices": "Hizmetlerimiz",
+    "quickAppointment": "Hızlı Randevu",
+    "relatedPosts": "İlgili yazılar",
+    "appointmentCta": "Randevu Al"
+  },
+  "blog": {
+    "cardLabel": "BLOG",
+    "publishedOn": "Yayınlanma",
+    "updatedOn": "Güncellenme",
+    "relatedServices": "İlgili hizmetler",
+    "recentPosts": "Son Yazılar"
+  },
+  "team": {
+    "contactCta": "İletişime Geç",
+    "eyebrow": "EKİBİMİZ"
+  },
+  "gallery": {
+    "close": "Kapat",
+    "previous": "Önceki görsel",
+    "next": "Sonraki görsel"
+  },
+  "video": {
+    "play": "Videoyu oynat",
+    "close": "Kapat"
+  },
+  "page": {
+    "appointmentCta": "Randevu Al"
+  },
+  "mail": {
+    "fields": {
+      "fullName": "Ad Soyad",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "preferredDate": "Tercih edilen tarih",
+      "service": "İlgilenilen hizmet",
+      "message": "Mesaj",
+      "otherService": "Belirtilmedi"
+    },
+    "appointment": {
+      "clinicSubject": "Yeni randevu talebi",
+      "clinicTitle": "Web sitesinden yeni bir randevu talebi geldi",
+      "userSubject": "Randevu talebiniz alındı",
+      "userTitle": "Randevu talebiniz bize ulaştı",
+      "userFooter": "Klinik ekibimiz en kısa sürede sizinle iletişime geçecek. Acil durumlar için: {phone}"
+    },
+    "contact": {
+      "clinicSubject": "Yeni iletişim mesajı",
+      "clinicTitle": "Web sitesinden yeni bir mesaj geldi",
+      "userSubject": "Mesajınız alındı",
+      "userTitle": "Mesajınız bize ulaştı",
+      "userFooter": "En kısa sürede size dönüş yapacağız. Acil durumlar için: {phone}"
+    }
+  },
+  "form": {
+    "required": "Zorunlu alanlar yıldız (*) ile işaretlenmiştir.",
+    "submitting": "Gönderiliyor…",
+    "successTitle": "Talebiniz alındı",
+    "successBody": "En kısa sürede sizinle iletişime geçeceğiz.",
+    "consentLabel": "KVKK ve iletişim koşullarını okudum, onaylıyorum.",
+    "selectService": "İlgilendiğiniz hizmeti seçin",
+    "otherService": "Diğer / Emin değilim",
+    "optional": "(isteğe bağlı)",
+    "errors": {
+      "validation": "Lütfen formdaki hataları düzeltin.",
+      "rate_limit": "Çok fazla gönderim yaptınız. Lütfen bir süre sonra tekrar deneyin.",
+      "mail_failed": "Talebiniz şu anda gönderilemedi. Lütfen telefonla ulaşın.",
+      "fullNameMin": "Ad soyad en az 2 karakter olmalıdır.",
+      "fullNameMax": "Ad soyad çok uzun.",
+      "emailInvalid": "Geçerli bir e-posta adresi girin.",
+      "phoneInvalid": "Geçerli bir telefon numarası girin.",
+      "consentRequired": "Devam etmek için onay vermelisiniz.",
+      "preferredDateInvalid": "Geçerli bir tarih seçin.",
+      "preferredDatePast": "Geçmiş bir tarih seçilemez.",
+      "serviceIdRequired": "Lütfen bir hizmet seçin.",
+      "messageMin": "Mesaj en az 10 karakter olmalıdır.",
+      "messageMax": "Mesaj çok uzun."
+    },
+    "labels": {
+      "fullName": "Ad Soyad",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "preferredDate": "Tercih Edilen Tarih",
+      "service": "İlgilendiğiniz Hizmet",
+      "message": "Mesajınız"
+    }
+  },
+  "cookie": {
+    "text": "Bu sitede yalnızca sitenin çalışması için gerekli çerezler kullanılır.",
+    "link": "Çerez politikası",
+    "accept": "Anladım"
+  },
+  "map": {
+    "directions": "Yol tarifi al"
+  },
+  "error": {
+    "notFoundTitle": "Sayfa bulunamadı",
+    "notFoundBody": "Aradığınız sayfa taşınmış veya kaldırılmış olabilir.",
+    "backHome": "Ana sayfaya dön",
+    "viewServices": "Hizmetleri incele",
+    "genericTitle": "Bir şeyler ters gitti",
+    "genericBody": "Beklenmeyen bir hata oluştu. Sayfayı yeniden yüklemeyi deneyebilirsiniz.",
+    "retry": "Tekrar dene"
+  }
+}

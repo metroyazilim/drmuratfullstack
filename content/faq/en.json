@@ -1,0 +1,20 @@
+[
+  {
+    "id": "botoks-etki-suresi",
+    "question": "How long do the effects of Botox treatment last?",
+    "answer": "The effects of Botox generally last between 4 to 6 months. With regular sessions, this duration may naturally extend.",
+    "category": "Botox"
+  },
+  {
+    "id": "randevu-nasil-alinir",
+    "question": "How can I book an appointment at your clinic?",
+    "answer": "You can easily schedule your consultation by filling out the appointment form on our website or contacting us directly via WhatsApp.",
+    "category": "General"
+  },
+  {
+    "id": "islem-sonrasi-dikkat",
+    "question": "What should I consider after medical aesthetic treatments?",
+    "answer": "Avoid washing the treated area for 24 hours, stay away from extreme heat (sauna, steam rooms), and avoid strenuous workouts.",
+    "category": "Post Treatment"
+  }
+]

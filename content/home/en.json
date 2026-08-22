@@ -1,0 +1,96 @@
+{
+  "seo": {
+    "title": "Dr. Murat Irmak Clinic — Medical Aesthetics in Istanbul",
+    "description": "Botox, dermal fillers, mesotherapy, ozone and cupping therapy in Halkali, Istanbul. Medical aesthetic care planned individually after a physician assessment.",
+    "ogImage": "/images/og/home.webp"
+  },
+  "hero": {
+    "eyebrow": "DR. MURAT IRMAK",
+    "title": "A personal approach to health, care and aesthetics.",
+    "description": "A consultation experience that brings together traditional and complementary medicine with medical aesthetics, guided by ethics, trust and current clinical practice.",
+    "imageAlt": "Medical aesthetic treatment room at Dr. Murat Irmak Clinic",
+    "primaryCta": "Book Appointment",
+    "secondaryCta": "Explore Services",
+    "doctorCard": {
+      "name": "Dr. Murat Irmak",
+      "title": "Physician • Istanbul / Kucukcekmece",
+      "photoAlt": "Portrait of Dr. Murat Irmak wearing a clinical coat",
+      "photo": "/images/team/murat-irmak.webp"
+    },
+    "image": "/images/home/hero.webp"
+  },
+  "about": {
+    "eyebrow": "ABOUT US",
+    "title": "A scientific approach, ethical care and a trust-focused clinic.",
+    "description": "Dr. Murat Irmak completed his medical education at Celal Bayar University Faculty of Medicine and went on to work in both public and private practice. He completed Ministry of Health approved training in traditional and complementary medicine, including mesotherapy, ozone, cupping and hirudotherapy, and continues his practice in Istanbul.",
+    "chips": [
+      "Individual assessment",
+      "Safe clinical process",
+      "Follow-up focused care"
+    ],
+    "imageAlt": "Dr. Murat Irmak assessing a patient at the clinic",
+    "ctaLabel": "About Us",
+    "image": "/images/home/about-doctor.webp"
+  },
+  "services": {
+    "eyebrow": "OUR SERVICES",
+    "title": "Care and treatment options tailored to you",
+    "ctaLabel": "All Services"
+  },
+  "whyUs": {
+    "title": "A clinic built on results, trust and attentive care.",
+    "items": [
+      {
+        "icon": "Stethoscope",
+        "title": "Physician assessment",
+        "description": "Needs, expectations and suitability are assessed by the physician before every procedure."
+      },
+      {
+        "icon": "UserCheck",
+        "title": "Individual protocol",
+        "description": "Instead of a single approach, planning follows your skin type and clinical requirements."
+      },
+      {
+        "icon": "ShieldCheck",
+        "title": "Follow-up and trust",
+        "description": "Aftercare, guidance and a safe clinical process are planned from the very beginning."
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "PROCESS",
+    "title": "Four steps from appointment to follow-up",
+    "steps": [
+      {
+        "title": "Appointment",
+        "description": "A suitable time is arranged by phone, WhatsApp or the online form."
+      },
+      {
+        "title": "Assessment",
+        "description": "Needs and expectations are discussed together during the physician consultation."
+      },
+      {
+        "title": "Treatment",
+        "description": "The suitable method is applied under clinical conditions within the planned time."
+      },
+      {
+        "title": "Follow-up",
+        "description": "The process continues to be monitored with check-ups and aftercare advice."
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "What people ask about our treatments",
+    "imageAlt": "Medical device used during a skin care treatment at the clinic",
+    "image": "/images/home/faq.webp"
+  },
+  "blog": {
+    "eyebrow": "BLOG",
+    "title": "Health and care guides"
+  },
+  "cta": {
+    "image": "/images/home/cta.webp",
+    "imageAlt": "Clinic consultation area for appointment planning"
+  }
+}

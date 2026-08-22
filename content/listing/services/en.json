@@ -1,0 +1,40 @@
+{
+  "seo": {
+    "title": "Medical Aesthetic Services",
+    "description": "Explore every treatment at our clinic — botox, fillers, mesotherapy, body contouring, cupping and leech therapy — each planned after a physician assessment.",
+    "ogImage": "/images/og/services.webp"
+  },
+  "banner": {
+    "title": "Our Services",
+    "image": "/images/services/services-banner.webp",
+    "imageAlt": "A selection of medical aesthetic treatments performed at the clinic"
+  },
+  "intro": {
+    "eyebrow": "TREATMENTS",
+    "title": "Services planned around an individual assessment",
+    "description": "The suitability, goal and session plan of every treatment is determined through a physician assessment. The areas below show the main services offered at the clinic."
+  },
+  "approach": {
+    "eyebrow": "OUR APPROACH",
+    "title": "Not a single protocol, but needs-focused planning.",
+    "description": "Skin type, medical history, expectations and the treatment area are assessed together. Where appropriate, combined care approaches and follow-up sessions can be planned.",
+    "steps": [
+      {
+        "title": "Initial assessment",
+        "description": "Medical history and expectation analysis."
+      },
+      {
+        "title": "Personal plan",
+        "description": "Choosing the method and number of sessions."
+      },
+      {
+        "title": "Treatment",
+        "description": "A safe process in clinical conditions."
+      },
+      {
+        "title": "Follow-up",
+        "description": "Check-ups and aftercare advice."
+      }
+    ]
+  }
+}

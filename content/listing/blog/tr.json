@@ -1,0 +1,17 @@
+{
+  "seo": {
+    "title": "Blog — Sağlık ve Bakım Rehberleri",
+    "description": "Botoks, dolgu, mezoterapi, sülük ve kupa tedavisi hakkında hekim bakış açısıyla hazırlanmış bilgilendirici yazılar ve uygulama rehberlerini okuyun.",
+    "ogImage": "/images/og/blog.webp"
+  },
+  "banner": {
+    "title": "Blog",
+    "imageAlt": "Klinikte cilt bakımı uygulaması sırasında kullanılan mikro iğneleme cihazı",
+    "image": "/images/blog/blog-banner.webp"
+  },
+  "intro": {
+    "eyebrow": "SAĞLIK & BAKIM",
+    "title": "Bilgilendirici yazılar ve uygulama rehberleri",
+    "description": "Uygulamaların ne olduğu, kimlere uygun olduğu ve sürecin nasıl planlandığı hakkında sade dille hazırlanmış içerikler."
+  }
+}

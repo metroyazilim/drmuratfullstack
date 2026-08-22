@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Book an Appointment",
+    "description": "Create an appointment request at Dr. Murat Irmak Clinic and let the clinic team call you back about your preferred date and treatment.",
+    "ogImage": "/images/og/appointment.webp"
+  },
+  "banner": {
+    "title": "Book an Appointment",
+    "image": "/images/pages/appointment-banner.webp",
+    "imageAlt": "Dr. Murat Irmak in the consultation room wearing a clinical coat"
+  },
+  "intro": {
+    "eyebrow": "APPOINTMENT",
+    "title": "Let us plan a time that suits you.",
+    "description": "After you submit the form, the clinic team will contact you about your appointment request."
+  },
+  "info": {
+    "eyebrow": "APPOINTMENT",
+    "title": "Let us plan a time that suits you.",
+    "description": "After you submit the form, the clinic team will contact you about your appointment request."
+  },
+  "form": {
+    "eyebrow": "APPOINTMENT FORM",
+    "title": "Create an appointment request",
+    "submitLabel": "Send Appointment Request"
+  },
+  "process": {
+    "eyebrow": "PROCESS",
+    "title": "From your request to the appointment",
+    "steps": [
+      {
+        "title": "Send the form",
+        "description": "Share your contact details and preferences."
+      },
+      {
+        "title": "We call you",
+        "description": "Discuss available times and the treatment."
+      },
+      {
+        "title": "Confirmation",
+        "description": "The date and time are finalised."
+      },
+      {
+        "title": "Visit the clinic",
+        "description": "A personal plan is made after the physician assessment."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Dr. Murat Irmak Kliniği",
+  "legalName": "Dr. Murat Irmak Kliniği",
+  "slogan": "Geleneksel ve Tamamlayıcı Tıp • Medikal Estetik",
+  "description": "Celal Bayar Üniversitesi Tıp Fakültesi mezunu Dr. Murat Irmak; Medikal Estetik, cilt gençleştirme ve Tamamlayıcı Tıp alanlarında hizmet veren Küçükçekmece Halkalı'daki kliniğinde botoks, dolgu, mezoterapi, ozon tedavisi, kupa tedavisi ve hirudoterapi uygulamaları sunmaktadır.",
+  "foundingDate": null,
+  "doctor": {
+    "name": "Dr. Murat Irmak",
+    "title": "Medikal Estetik ve Tamamlayıcı Tıp Hekimi",
+    "specialty": "Medikal Estetik, Cilt Gençleştirme, Tamamlayıcı Tıp"
+  },
+  "contact": {
+    "phone": "+905421883034",
+    "phoneFormatted": "0542 188 30 34",
+    "whatsapp": "+905421883034",
+    "whatsappFormatted": "0542 188 30 34",
+    "email": "bilgi@drmuratirmak.com",
+    "appointmentEmail": "bilgi@drmuratirmak.com"
+  },
+  "address": {
+    "street": "Halkalı Merkez Mah. 1. İkitelli Cad. No: 2, Meydan Halkalı Rezidans A Blok Kat: 1/23",
+    "district": "Küçükçekmece",
+    "city": "İstanbul",
+    "postalCode": "34303",
+    "country": "TR",
+    "formatted": "Halkalı Merkez Mah. 1. İkitelli Cad. No: 2, Meydan Halkalı Rezidans A Blok Kat: 1/23, 34303 Küçükçekmece / İstanbul",
+    "geo": null
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/dr.muratirmak/"
+  },
+  "openingHours": null
+}

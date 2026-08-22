@@ -1,0 +1,20 @@
+[
+  {
+    "id": "botoks-etki-suresi",
+    "question": "Botoks uygulamasının etkisi ne kadar sürer?",
+    "answer": "Botoks uygulamasının etkisi genellikle 4 ila 6 ay arasında devam eder. Düzenli uygulamalarda bu süre uzayabilir.",
+    "category": "Botoks"
+  },
+  {
+    "id": "randevu-nasil-alinir",
+    "question": "Kliniğinizden nasıl randevu alabilirim?",
+    "answer": "Web sitemizdeki randevu formunu doldurarak veya doğrudan WhatsApp hattımızdan bize ulaşarak randevunuzu kolayca planlayabilirsiniz.",
+    "category": "Genel"
+  },
+  {
+    "id": "islem-sonrasi-dikkat",
+    "question": "Medikal estetik uygulamalarından sonra nelere dikkat edilmelidir?",
+    "answer": "İşlem yapılan bölgeye ilk 24 saat su değdirilmemeli, aşırı sıcak ortamlardan (sauna, hamam) kaçınılmalı ve ağır egzersiz yapılmamalıdır.",
+    "category": "Uygulama Sonrası"
+  }
+]

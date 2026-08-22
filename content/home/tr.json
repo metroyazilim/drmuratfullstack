@@ -1,0 +1,96 @@
+{
+  "seo": {
+    "title": "Dr. Murat Irmak Kliniği — Medikal Estetik ve Tamamlayıcı Tıp",
+    "description": "Küçükçekmece Halkalı'da botoks, dolgu, mezoterapi, ozon ve kupa tedavisi uygulamaları. Hekim değerlendirmesiyle kişiye özel planlanan medikal estetik hizmetleri.",
+    "ogImage": "/images/og/home.webp"
+  },
+  "hero": {
+    "eyebrow": "DR. MURAT IRMAK",
+    "title": "Sağlık, bakım ve estetikte kişiye özel yaklaşım.",
+    "description": "Geleneksel ve tamamlayıcı tıp ile medikal estetik uygulamalarını etik, güven ve güncel klinik yaklaşımla bir araya getiren muayene deneyimi.",
+    "imageAlt": "Dr. Murat Irmak Kliniği medikal estetik uygulama ortamı",
+    "primaryCta": "Randevu Al",
+    "secondaryCta": "Hizmetleri İncele",
+    "doctorCard": {
+      "name": "Dr. Murat Irmak",
+      "title": "Hekim • İstanbul / Küçükçekmece",
+      "photoAlt": "Dr. Murat Irmak klinik önlüğüyle portre fotoğrafı",
+      "photo": "/images/team/murat-irmak.webp"
+    },
+    "image": "/images/home/hero.webp"
+  },
+  "about": {
+    "eyebrow": "HAKKIMIZDA",
+    "title": "Bilimsel yaklaşım, etik hizmet ve güven odaklı klinik deneyimi.",
+    "description": "Dr. Murat Irmak, tıp eğitimini Celal Bayar Üniversitesi Tıp Fakültesi'nde tamamladıktan sonra kamu ve özel sektörde görev aldı. Mezoterapi, ozon, kupa ve hirudoterapi alanlarında Sağlık Bakanlığı onaylı geleneksel ve tamamlayıcı tıp eğitimlerini tamamlayarak İstanbul'da çalışmalarını sürdürmektedir.",
+    "chips": [
+      "Kişiye özel değerlendirme",
+      "Güvenli klinik süreç",
+      "Takip odaklı hizmet"
+    ],
+    "imageAlt": "Dr. Murat Irmak klinikte hasta değerlendirmesi yaparken",
+    "ctaLabel": "Hakkımızda",
+    "image": "/images/home/about-doctor.webp"
+  },
+  "services": {
+    "eyebrow": "HİZMETLERİMİZ",
+    "title": "Size özel bakım ve tedavi seçenekleri",
+    "ctaLabel": "Tüm Hizmetler"
+  },
+  "whyUs": {
+    "title": "Sonuç, güven ve özen üzerine kurulu bir klinik.",
+    "items": [
+      {
+        "icon": "Stethoscope",
+        "title": "Hekim değerlendirmesi",
+        "description": "Her uygulama öncesinde ihtiyaç, beklenti ve uygunluk hekim tarafından değerlendirilir."
+      },
+      {
+        "icon": "UserCheck",
+        "title": "Kişiye özel protokol",
+        "description": "Tek bir yaklaşım yerine cilt yapısı ve klinik gereksinime göre planlama yapılır."
+      },
+      {
+        "icon": "ShieldCheck",
+        "title": "Takip ve güven",
+        "description": "Uygulama sonrası bakım, bilgilendirme ve güvenli klinik süreç en baştan planlanır."
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "SÜREÇ",
+    "title": "Randevudan takibe dört adım",
+    "steps": [
+      {
+        "title": "Randevu",
+        "description": "Telefon, WhatsApp veya form üzerinden uygun zaman planlanır."
+      },
+      {
+        "title": "Değerlendirme",
+        "description": "İhtiyaç ve beklentiler hekim görüşmesinde birlikte ele alınır."
+      },
+      {
+        "title": "Uygulama",
+        "description": "Kişiye uygun yöntem, klinik koşullarda planlanan süre içinde uygulanır."
+      },
+      {
+        "title": "Takip",
+        "description": "Kontrol ve bakım önerileriyle süreç izlenmeye devam eder."
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "SIK SORULANLAR",
+    "title": "Uygulamalar hakkında merak edilenler",
+    "imageAlt": "Klinikte cilt bakımı uygulaması sırasında kullanılan medikal cihaz",
+    "image": "/images/home/faq.webp"
+  },
+  "blog": {
+    "eyebrow": "BLOG",
+    "title": "Sağlık ve bakım rehberleri"
+  },
+  "cta": {
+    "image": "/images/home/cta.webp",
+    "imageAlt": "Randevu planlaması için klinik danışma alanı"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "blog": "Blog",
+    "team": "Our Team",
+    "gallery": "Gallery",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "appointment": "Book Appointment"
+  },
+  "common": {
+    "appointment": "Book Appointment",
+    "readMore": "Read More",
+    "home": "Home",
+    "services": "Services",
+    "contact": "Contact",
+    "callNow": "Call Now",
+    "whatsapp": "Contact via WhatsApp"
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "English",
+    "ar": "العربية",
+    "ru": "Русский"
+  },
+  "a11y": {
+    "whatsapp": "Message on WhatsApp",
+    "phone": "Call by phone",
+    "menu": "Open menu",
+    "close": "Close",
+    "languageSwitcher": "Select language"
+  },
+  "demo": {
+    "title": "SPEC-002: i18n and RTL Verification Page",
+    "description": "Verification area for 4-language infrastructure, RTL layout support, dynamic language switcher, and static localized routes.",
+    "activeLanguage": "Active Language",
+    "direction": "Text Direction",
+    "phoneLabel": "Clinic Phone Number",
+    "cardTitle": "Natural & Holistic Approach",
+    "cardDescription": "We provide traditional medicine and modern medical aesthetics safely in our Halkalı Atakent clinic.",
+    "servicesPageLink": "Go to Services Page",
+    "servicesPageTitle": "Our Services Page",
+    "servicesPageDesc": "This page verifies static pathname translation and preserving current route during language change."
+  }
+}

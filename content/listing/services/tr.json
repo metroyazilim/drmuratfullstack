@@ -1,0 +1,40 @@
+{
+  "seo": {
+    "title": "Medikal Estetik ve Tamamlayıcı Tıp Hizmetleri",
+    "description": "Botoks, dolgu, mezoterapi, bölgesel zayıflama, kupa ve sülük tedavisi dahil kliniğimizde hekim değerlendirmesiyle planlanan tüm uygulamaları inceleyin.",
+    "ogImage": "/images/og/services.webp"
+  },
+  "banner": {
+    "title": "Hizmetlerimiz",
+    "image": "/images/services/services-banner.webp",
+    "imageAlt": "Klinikte uygulanan medikal estetik işlemlerden bir kesit"
+  },
+  "intro": {
+    "eyebrow": "UYGULAMALAR",
+    "title": "Kişiye özel değerlendirme ile planlanan hizmetler",
+    "description": "Her uygulamanın uygunluğu, hedefi ve seans planı hekim değerlendirmesi ile belirlenir. Aşağıdaki alanlar klinikte sunulan başlıca hizmetleri gösterir."
+  },
+  "approach": {
+    "eyebrow": "YAKLAŞIM",
+    "title": "Tek bir protokol değil, ihtiyaç odaklı planlama.",
+    "description": "Cilt yapısı, sağlık öyküsü, beklentiler ve uygulama alanı birlikte değerlendirilir. Gerekli durumlarda kombine bakım yaklaşımları ve takip seansları planlanabilir.",
+    "steps": [
+      {
+        "title": "Ön değerlendirme",
+        "description": "Sağlık öyküsü ve beklenti analizi."
+      },
+      {
+        "title": "Kişisel plan",
+        "description": "Uygun yöntem ve seans sayısının belirlenmesi."
+      },
+      {
+        "title": "Uygulama",
+        "description": "Klinik ortamda güvenli süreç."
+      },
+      {
+        "title": "Takip",
+        "description": "Kontrol ve bakım önerileri."
+      }
+    ]
+  }
+}

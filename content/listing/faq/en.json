@@ -1,0 +1,19 @@
+{
+  "seo": {
+    "title": "Frequently Asked Questions",
+    "description": "Answers from a physician's perspective to the questions most often asked before an appointment about botox, fillers, mesotherapy, ozone and cupping.",
+    "ogImage": "/images/og/faq.webp"
+  },
+  "banner": {
+    "title": "Frequently Asked Questions",
+    "image": "/images/pages/faq-banner.webp",
+    "imageAlt": "Photograph taken during preparation before a treatment at the clinic"
+  },
+  "intro": {
+    "eyebrow": "COMMON QUESTIONS",
+    "title": "Questions frequently asked before an appointment",
+    "description": "General information about treatments. Individual medical suitability requires a physician assessment.",
+    "image": "/images/pages/faq-intro.webp",
+    "imageAlt": "Dr. Murat Irmak in the consultation room wearing a clinical coat"
+  }
+}

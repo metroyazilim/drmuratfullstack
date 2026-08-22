@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Renkler — ui-context.md > Colors */
+  --color-bg-base: #ffffff;
+  --color-bg-surface: #f6f7f9;
+  --color-bg-tint: #f1f5fe;
+  --color-bg-inverse: #141615;
+  --color-accent-soft: #ecf2fe;
+  --color-accent-primary: #3372e6;
+  --color-accent-hover: #2a5fc4;
+  --color-text-primary: #141615;
+  --color-text-muted: #5d6162;
+  --color-text-inverse: #ffffff;
+  --color-border-default: #e3e6eb;
+  --color-border-inverse: #2a2c2b;
+  --color-state-error: #d92d20;
+  --color-state-success: #12805c;
+  /* ui-context.md "tek vurgu rengi" kuralının bilinçli tek istisnası.
+     Token olarak tanımlı ki WhatsApp dışında kullanılamasın. */
+  --color-brand-whatsapp: #25d366;
+  --color-brand-whatsapp-hover: #1da851;
+
+  /* Yarıçap — ui-context.md > Border Radius */
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  /* Tipografi */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic:
+    var(--font-ibm-plex-arabic), var(--font-inter), sans-serif;
+
+  /* Layout */
+  --spacing-container: 1200px;
+}
+
+:root {
+  --overlay-image: rgba(20, 22, 21, 0.55);
+}
+
+/* Sticky header hedef bağlantıların üstünü kapatmasın. */
+:target {
+  scroll-margin-top: 6rem;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Kaydırma ile beliren bloklar
+
+   Başlangıç (gizli) durumu YALNIZCA html[data-motion="on"] altında geçerli.
+   Bu nitelik JS ile ekleniyor; JS kapalıysa hiçbir şey gizlenmez.
+
+   Yalnızca `transform` ve `opacity` animasyonu yapılır — düzen (layout)
+   hiç değişmediği için CLS 0'da kalır ve LCP etkilenmez.
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion='on'] [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  html[data-motion='on'] [data-reveal='up'] {
+    transform: translate3d(0, 24px, 0);
+  }
+  html[data-motion='on'] [data-reveal='down'] {
+    transform: translate3d(0, -24px, 0);
+  }
+  /* Yön duyarlı: RTL'de sağ/sol otomatik yer değiştirir. */
+  html[data-motion='on'] [data-reveal='left'] {
+    transform: translate3d(-28px, 0, 0);
+  }
+  html[data-motion='on'] [data-reveal='right'] {
+    transform: translate3d(28px, 0, 0);
+  }
+  html[dir='rtl'][data-motion='on'] [data-reveal='left'] {
+    transform: translate3d(28px, 0, 0);
+  }
+  html[dir='rtl'][data-motion='on'] [data-reveal='right'] {
+    transform: translate3d(-28px, 0, 0);
+  }
+  html[data-motion='on'] [data-reveal='fade'] {
+    transform: none;
+  }
+
+  html[data-motion='on'] [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}

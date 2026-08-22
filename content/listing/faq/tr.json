@@ -1,0 +1,19 @@
+{
+  "seo": {
+    "title": "Sık Sorulan Sorular",
+    "description": "Botoks, dolgu, mezoterapi, ozon ve kupa tedavisi hakkında randevu öncesi en çok sorulan soruların hekim bakış açısıyla yanıtları.",
+    "ogImage": "/images/og/faq.webp"
+  },
+  "banner": {
+    "title": "Sık Sorulan Sorular",
+    "image": "/images/pages/faq-banner.webp",
+    "imageAlt": "Klinikte uygulama öncesi hazırlık sırasında çekilmiş fotoğraf"
+  },
+  "intro": {
+    "eyebrow": "MERAK EDİLENLER",
+    "title": "Randevu öncesi sık sorulan sorular",
+    "description": "Uygulamalar hakkında genel bilgilendirme. Kişisel tıbbi uygunluk için hekim değerlendirmesi gereklidir.",
+    "image": "/images/pages/faq-intro.webp",
+    "imageAlt": "Dr. Murat Irmak klinik önlüğüyle muayene odasında"
+  }
+}

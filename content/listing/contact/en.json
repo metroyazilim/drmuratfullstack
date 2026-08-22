@@ -1,0 +1,30 @@
+{
+  "seo": {
+    "title": "Contact",
+    "description": "Reach Dr. Murat Irmak Clinic: our address in Halkali Kucukcekmece, phone number, email addresses and message form are all on this page.",
+    "ogImage": "/images/og/contact.webp"
+  },
+  "banner": {
+    "title": "Contact",
+    "image": "/images/pages/contact-banner.webp",
+    "imageAlt": "Dr. Murat Irmak in the consultation room wearing a clinical coat"
+  },
+  "intro": {
+    "eyebrow": "CONTACT",
+    "title": "Reach our clinic",
+    "description": "Reach Dr. Murat Irmak Clinic: our address in Halkali Kucukcekmece, phone number, email addresses and message form are all on this page."
+  },
+  "info": {
+    "eyebrow": "CONTACT",
+    "title": "Reach our clinic"
+  },
+  "form": {
+    "eyebrow": "SEND A MESSAGE",
+    "title": "Do you have a question?",
+    "submitLabel": "Send Message"
+  },
+  "map": {
+    "label": "Meydan Halkali Residence, Kucukcekmece / Istanbul",
+    "image": "/images/pages/map.webp"
+  }
+}

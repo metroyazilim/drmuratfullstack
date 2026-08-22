@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Ekibimiz",
+    "description": "Randevu koordinasyonundan uygulama ve takip süreçlerine kadar klinik deneyiminin her adımında görev alan Dr. Murat Irmak Kliniği ekibini tanıyın.",
+    "ogImage": "/images/og/team.webp"
+  },
+  "banner": {
+    "title": "Ekibimiz",
+    "image": "/images/pages/team-banner.webp",
+    "imageAlt": "Dr. Murat Irmak Kliniği ekibi klinik ortamında"
+  },
+  "intro": {
+    "eyebrow": "EKİP",
+    "title": "Klinik deneyimin her adımında yanınızdayız.",
+    "description": "Hekim değerlendirmesinden randevu ve uygulama organizasyonuna kadar koordineli çalışan ekip."
+  },
+  "approach": {
+    "items": [
+      {
+        "icon": "CalendarCheck",
+        "title": "Randevu koordinasyonu",
+        "description": "Uygun tarih ve saat planlaması ile ziyaret öncesi bilgilendirme."
+      },
+      {
+        "icon": "ShieldCheck",
+        "title": "Klinik hazırlık",
+        "description": "Uygulama öncesi süreçlerin düzenli ve güvenli şekilde hazırlanması."
+      },
+      {
+        "icon": "HeartPulse",
+        "title": "Takip desteği",
+        "description": "Kontrol ve bakım süreçlerinde iletişimin sürdürülmesi."
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Randevu Al",
+    "description": "Dr. Murat Irmak Kliniği'nden randevu talebi oluşturun; klinik ekibi tercih ettiğiniz tarih ve hizmet için sizinle telefonla iletişime geçsin.",
+    "ogImage": "/images/og/appointment.webp"
+  },
+  "banner": {
+    "title": "Randevu Al",
+    "image": "/images/pages/appointment-banner.webp",
+    "imageAlt": "Dr. Murat Irmak klinik önlüğüyle muayene odasında"
+  },
+  "intro": {
+    "eyebrow": "RANDEVU",
+    "title": "Size uygun zamanı birlikte planlayalım.",
+    "description": "Formu bıraktıktan sonra klinik ekibi randevu talebiniz için sizinle iletişime geçer."
+  },
+  "info": {
+    "eyebrow": "RANDEVU",
+    "title": "Size uygun zamanı birlikte planlayalım.",
+    "description": "Formu bıraktıktan sonra klinik ekibi randevu talebiniz için sizinle iletişime geçer."
+  },
+  "form": {
+    "eyebrow": "RANDEVU FORMU",
+    "title": "Randevu talebi oluşturun",
+    "submitLabel": "Randevu Talebini Gönder"
+  },
+  "process": {
+    "eyebrow": "SÜREÇ",
+    "title": "Talebinizden randevuya",
+    "steps": [
+      {
+        "title": "Formu gönderin",
+        "description": "İletişim ve tercih bilgilerinizi paylaşın."
+      },
+      {
+        "title": "Ekibimiz arasın",
+        "description": "Müsait saatler ve hizmet hakkında görüşün."
+      },
+      {
+        "title": "Randevu onayı",
+        "description": "Tarih ve saat kesinleştirilsin."
+      },
+      {
+        "title": "Kliniğe gelin",
+        "description": "Hekim değerlendirmesiyle kişisel plan oluşturulsun."
+      }
+    ]
+  }
+}

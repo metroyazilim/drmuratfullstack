@@ -1,0 +1,17 @@
+{
+  "seo": {
+    "title": "Blog — Health and Care Guides",
+    "description": "Read informative articles and treatment guides on botox, fillers, mesotherapy, leech and cupping therapy, written from a physician's perspective.",
+    "ogImage": "/images/og/blog.webp"
+  },
+  "banner": {
+    "title": "Blog",
+    "imageAlt": "Microneedling device used during a skin care treatment at the clinic",
+    "image": "/images/blog/blog-banner.webp"
+  },
+  "intro": {
+    "eyebrow": "HEALTH & CARE",
+    "title": "Informative articles and treatment guides",
+    "description": "Plain-language content on what each treatment is, who it suits and how the process is planned."
+  }
+}

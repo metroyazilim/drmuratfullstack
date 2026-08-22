@@ -1,0 +1,17 @@
+{
+  "seo": {
+    "title": "Video Gallery",
+    "description": "Watch video content on the clinical approach, treatment processes and complementary medicine methods used at the clinic.",
+    "ogImage": "/images/og/video.webp"
+  },
+  "banner": {
+    "title": "Video Gallery",
+    "image": "/images/pages/video-banner.webp",
+    "imageAlt": "Frame taken during a microneedling treatment at the clinic"
+  },
+  "intro": {
+    "eyebrow": "VIDEO GALLERY",
+    "title": "Discover the clinical approach and treatments through video",
+    "description": "Video content explaining treatment processes and the clinical approach."
+  }
+}

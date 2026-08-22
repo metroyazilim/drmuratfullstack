@@ -1,0 +1,30 @@
+{
+  "seo": {
+    "title": "İletişim",
+    "description": "Dr. Murat Irmak Kliniği'ne ulaşın: Halkalı Küçükçekmece adresimiz, telefon numaramız, e-posta adreslerimiz ve mesaj formu bu sayfada.",
+    "ogImage": "/images/og/contact.webp"
+  },
+  "banner": {
+    "title": "İletişim",
+    "image": "/images/pages/contact-banner.webp",
+    "imageAlt": "Dr. Murat Irmak klinik önlüğüyle muayene odasında"
+  },
+  "intro": {
+    "eyebrow": "İLETİŞİM",
+    "title": "Kliniğimize ulaşın",
+    "description": "Dr. Murat Irmak Kliniği'ne ulaşın: Halkalı Küçükçekmece adresimiz, telefon numaramız, e-posta adreslerimiz ve mesaj formu bu sayfada."
+  },
+  "info": {
+    "eyebrow": "İLETİŞİM",
+    "title": "Kliniğimize ulaşın"
+  },
+  "form": {
+    "eyebrow": "MESAJ GÖNDER",
+    "title": "Sorunuz mu var?",
+    "submitLabel": "Mesajı Gönder"
+  },
+  "map": {
+    "label": "Meydan Halkalı Rezidans, Küçükçekmece / İstanbul",
+    "image": "/images/pages/map.webp"
+  }
+}

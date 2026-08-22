@@ -1,0 +1,47 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımızda",
+    "services": "Hizmetlerimiz",
+    "blog": "Blog",
+    "team": "Ekibimiz",
+    "gallery": "Galeri",
+    "faq": "S.S.S.",
+    "contact": "İletişim",
+    "appointment": "Randevu Al"
+  },
+  "common": {
+    "appointment": "Randevu Al",
+    "readMore": "Devamını Oku",
+    "home": "Ana Sayfa",
+    "services": "Hizmetlerimiz",
+    "contact": "İletişim",
+    "callNow": "Hemen Arayın",
+    "whatsapp": "WhatsApp ile İletişim"
+  },
+  "language": {
+    "tr": "Türkçe",
+    "en": "English",
+    "ar": "العربية",
+    "ru": "Русский"
+  },
+  "a11y": {
+    "whatsapp": "WhatsApp'tan yazın",
+    "phone": "Telefonla arayın",
+    "menu": "Menüyü aç",
+    "close": "Kapat",
+    "languageSwitcher": "Dil seçiniz"
+  },
+  "demo": {
+    "title": "SPEC-002: i18n ve RTL Doğrulama Sayfası",
+    "description": "Dört dilli altyapı, RTL yön desteği, dinamik dil değişimi ve statik sayfa yolları doğrulama alanı.",
+    "activeLanguage": "Seçili Dil",
+    "direction": "Yazı Yönü",
+    "phoneLabel": "Klinik Telefon Numarası",
+    "cardTitle": "Doğal & Bütünsel Yaklaşım",
+    "cardDescription": "Halkalı Atakent kliniğimizde geleneksel tıp ve modern estetik uygulamaları güvenle sunuyoruz.",
+    "servicesPageLink": "Hizmetler Sayfasına Git",
+    "servicesPageTitle": "Hizmetlerimiz Sayfası",
+    "servicesPageDesc": "Bu sayfa statik yol çevirisini ve dil değişiminde sayfa korunmasını doğrular."
+  }
+}
