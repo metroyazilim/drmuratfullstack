@@ -14,7 +14,6 @@ import { TopBar } from '@/components/shared/top-bar';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
 import { FloatingActions } from '@/components/shared/floating-actions';
-import { MotionProvider } from '@/components/shared/motion-provider';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -90,7 +89,6 @@ export default async function LocaleLayout({
           />
           <Analytics />
           <SpeedInsights />
-          <MotionProvider />
         </NextIntlClientProvider>
       </body>
     </html>

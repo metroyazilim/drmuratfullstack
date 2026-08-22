@@ -36,15 +36,18 @@ export function Hero({ hero }: { hero: Home['hero'] }) {
               {hero.eyebrow}
             </p>
 
-            <h1 className="text-text-inverse mt-4 max-w-xl text-3xl leading-tight font-bold tracking-tight md:text-5xl">
+            <h1 className="text-text-inverse mt-3 max-w-xl text-2xl leading-tight font-bold tracking-tight sm:text-3xl md:mt-4 md:text-5xl">
               {hero.title}
             </h1>
 
-            <p className="text-text-inverse/75 mt-4 max-w-lg text-sm leading-relaxed md:text-base">
+            {/* Mobilde açıklama gizli: 400px'lik görsel alanına başlık,
+                açıklama ve iki buton birlikte sığmıyor ve metin taşıyordu.
+                Aynı metin hemen altındaki "Hakkımızda" bölümünde zaten var. */}
+            <p className="text-text-inverse/75 mt-4 hidden max-w-lg text-sm leading-relaxed sm:block md:text-base">
               {hero.description}
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap gap-3 md:mt-7">
               <Link href="/appointment">
                 <Button variant="primary" size="lg">
                   {hero.primaryCta}

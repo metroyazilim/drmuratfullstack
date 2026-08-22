@@ -90,19 +90,12 @@ body {
   html[data-motion='on'] [data-reveal='down'] {
     transform: translate3d(0, -24px, 0);
   }
-  /* Yön duyarlı: RTL'de sağ/sol otomatik yer değiştirir. */
-  html[data-motion='on'] [data-reveal='left'] {
-    transform: translate3d(-28px, 0, 0);
-  }
-  html[data-motion='on'] [data-reveal='right'] {
-    transform: translate3d(28px, 0, 0);
-  }
-  html[dir='rtl'][data-motion='on'] [data-reveal='left'] {
-    transform: translate3d(28px, 0, 0);
-  }
-  html[dir='rtl'][data-motion='on'] [data-reveal='right'] {
-    transform: translate3d(-28px, 0, 0);
-  }
+  /* Yatay giriş YOK: sağdan/soldan gelen bloklar mobilde belirme anında
+     görünüm alanını taşırıp sayfayı yana kaydırıyordu. `left`/`right`
+     artık yalnızca yumuşak bir fade — API aynı kaldığı için çağrı
+     yerlerine dokunmak gerekmiyor. */
+  html[data-motion='on'] [data-reveal='left'],
+  html[data-motion='on'] [data-reveal='right'],
   html[data-motion='on'] [data-reveal='fade'] {
     transform: none;
   }

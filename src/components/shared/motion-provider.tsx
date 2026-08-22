@@ -1,14 +1,22 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 /**
  * Tek IntersectionObserver, tüm `[data-reveal]` blokları için.
  *
  * Her blok için ayrı client bileşeni yerine tek gözlemci: bundle küçük
  * kalır ve `Reveal` server component olarak kalabilir.
+ *
+ * `pathname` bağımlılığı ŞART: layout gezinmeler arasında ayakta kaldığı
+ * için efekt yalnızca ilk yüklemede çalışsaydı, tıklanarak açılan
+ * sayfaların blokları hiç gözlemlenmez ve `opacity: 0`'da takılı kalırdı —
+ * yani sayfa bomboş görünürdü.
  */
 export function MotionProvider() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const root = document.documentElement;
 
@@ -41,7 +49,7 @@ export function MotionProvider() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   return null;
 }
