@@ -30,7 +30,15 @@ function postalAddress(clinic: Clinic) {
   };
 }
 
-export function clinicSchema(locale: Locale): WithContext<MedicalClinic> {
+/**
+ * `description` dışarıdan verilir (çağıran yer `getTranslations` ile
+ * çözer) çünkü tanıtım metni dile göre değişir; `clinic.json`'daki alan
+ * yalnızca künye (telefon, adres) taşır, tek dilli bir açıklama değil.
+ */
+export function clinicSchema(
+  locale: Locale,
+  description: string,
+): WithContext<MedicalClinic> {
   const clinic = getClinic();
   const sameAs = Object.values(clinic.social).filter(Boolean) as string[];
 
@@ -40,7 +48,7 @@ export function clinicSchema(locale: Locale): WithContext<MedicalClinic> {
     '@id': CLINIC_ID,
     name: SITE_NAME[locale],
     legalName: clinic.legalName,
-    description: clinic.description,
+    description,
     url: absoluteUrl(`/${locale}`),
     telephone: clinic.contact.phone,
     email: clinic.contact.email,

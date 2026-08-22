@@ -30,8 +30,12 @@ export async function Footer({ locale }: { locale: Locale }) {
           {/* Marka + bülten */}
           <div className="lg:pe-6">
             <Brand inverse />
+            {/* Klinik tanıtım metni dile göre çevrilir; clinic.json'daki
+                description tek dildi ve her locale'de aynı Türkçe metni
+                basıyordu. Künye (telefon, adres) clinic.json'da kalır,
+                bu tanıtım cümlesi messages'a taşındı. */}
             <p className="text-text-inverse/60 mt-4 text-sm leading-relaxed">
-              {clinic.description}
+              {tFooter('about')}
             </p>
 
             <div className="mt-6">

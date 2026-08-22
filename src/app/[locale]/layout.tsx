@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { fontSans, fontArabic } from '@/lib/fonts';
 import { routing } from '@/i18n/routing';
 import { JsonLd } from '@/components/shared/json-ld';
@@ -67,6 +67,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const isRtl = locale === 'ar';
   const clinic = getClinic();
+  const tFooter = await getTranslations({ locale, namespace: 'footer' });
 
   // Çerez politikası sayfası henüz yazılmadıysa band linksiz gösterilir.
   const cookiePolicySlug = getAlternates('legal', 'cookies')?.[locale];
@@ -81,7 +82,7 @@ export default async function LocaleLayout({
     >
       <body className="bg-bg-base text-text-primary antialiased">
         {/* Klinik tekil bir varlık; her sayfada @id ile referans verilir. */}
-        <JsonLd data={clinicSchema(locale)} />
+        <JsonLd data={clinicSchema(locale as Locale, tFooter('about'))} />
         <NextIntlClientProvider messages={messages}>
           <SkipLink />
           <TopBar />
