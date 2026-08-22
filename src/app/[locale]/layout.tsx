@@ -8,16 +8,13 @@ import { JsonLd } from '@/components/shared/json-ld';
 import { clinicSchema } from '@/lib/seo/schema';
 import { SITE_NAME, SITE_URL } from '@/lib/seo/config';
 import type { Locale } from '@/lib/i18n';
-import { getAlternates, getClinic } from '@/lib/content';
+import { getClinic } from '@/lib/content';
 import { SkipLink } from '@/components/shared/skip-link';
 import { TopBar } from '@/components/shared/top-bar';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
 import { FloatingActions } from '@/components/shared/floating-actions';
-import { CookieNotice } from '@/components/shared/cookie-notice';
 import { MotionProvider } from '@/components/shared/motion-provider';
-// İkisi de ÇEREZSİZ — bu yüzden çerez bandı onay kapısına değil,
-// bilgilendirmeye devam ediyor (SPEC-010 kararı).
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -69,9 +66,6 @@ export default async function LocaleLayout({
   const clinic = getClinic();
   const tFooter = await getTranslations({ locale, namespace: 'footer' });
 
-  // Çerez politikası sayfası henüz yazılmadıysa band linksiz gösterilir.
-  const cookiePolicySlug = getAlternates('legal', 'cookies')?.[locale];
-
   return (
     <html
       lang={locale}
@@ -94,7 +88,6 @@ export default async function LocaleLayout({
             phone={clinic.contact.phone}
             whatsapp={clinic.contact.whatsapp}
           />
-          <CookieNotice policySlug={cookiePolicySlug} />
           <Analytics />
           <SpeedInsights />
           <MotionProvider />

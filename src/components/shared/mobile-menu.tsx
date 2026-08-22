@@ -43,6 +43,9 @@ export function MobileMenu({ phone, phoneFormatted }: MobileMenuProps) {
             <Dialog.Title className="text-text-primary text-base font-bold">
               Dr. Murat Irmak
             </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              {tA11y('openMenu')}
+            </Dialog.Description>
             <Dialog.Close
               aria-label={tA11y('closeMenu')}
               className="text-text-muted hover:bg-bg-surface inline-flex h-9 w-9 items-center justify-center rounded-md"
