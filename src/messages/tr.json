@@ -170,7 +170,8 @@
     "accept": "Anladım"
   },
   "map": {
-    "directions": "Yol tarifi al"
+    "directions": "Yol tarifi al",
+    "embedTitle": "Klinik konumu — Google Haritalar"
   },
   "error": {
     "notFoundTitle": "Sayfa bulunamadı",

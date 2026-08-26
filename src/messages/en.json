@@ -170,7 +170,8 @@
     "accept": "Got it"
   },
   "map": {
-    "directions": "Get directions"
+    "directions": "Get directions",
+    "embedTitle": "Clinic location — Google Maps"
   },
   "error": {
     "notFoundTitle": "Page not found",

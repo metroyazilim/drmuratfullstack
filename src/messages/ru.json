@@ -170,7 +170,8 @@
     "accept": "Понятно"
   },
   "map": {
-    "directions": "Построить маршрут"
+    "directions": "Построить маршрут",
+    "embedTitle": "Расположение клиники — Google Карты"
   },
   "error": {
     "notFoundTitle": "Страница не найдена",

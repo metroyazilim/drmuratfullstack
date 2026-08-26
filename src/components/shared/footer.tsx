@@ -12,7 +12,12 @@ export async function Footer({ locale }: { locale: Locale }) {
   const tFooter = await getTranslations('footer');
   const tLegal = await getTranslations('legal');
   const tA11y = await getTranslations('a11y');
+  const tMap = await getTranslations('map');
   const clinic = getClinic();
+
+  // Harita, clinic.json'daki `address.geo` ile aynı noktayı gösterir;
+  // LocalBusiness şeması ve harita tek kaynaktan beslenir.
+  const geo = clinic.address.geo;
 
   // Yasal bağlantılar İÇERİKTEN türetilir; sabit slug listesi tutulmaz.
   // Slug dile göre değişiyor (tr: kvkk, en: privacy-policy) ve henüz
@@ -159,6 +164,22 @@ export async function Footer({ locale }: { locale: Locale }) {
           </nav>
         </div>
       </Container>
+
+      {/* Konum haritası: footer'ın en altında tam genişlikte bir şerit.
+          `loading="lazy"` ile ilk boyamanın dışında tutulur; harita
+          görünüm alanına girmeden yüklenmez ve LCP'yi etkilemez.
+          `hl` parametresi harita arayüzünü aktif dile çevirir. */}
+      {geo && (
+        <div className="border-border-inverse border-t">
+          <iframe
+            title={tMap('embedTitle')}
+            src={`https://maps.google.com/maps?q=${geo.latitude},${geo.longitude}&z=17&hl=${locale}&output=embed`}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="block h-72 w-full border-0 md:h-96"
+          />
+        </div>
+      )}
     </footer>
   );
 }

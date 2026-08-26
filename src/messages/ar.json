@@ -170,7 +170,8 @@
     "accept": "حسناً"
   },
   "map": {
-    "directions": "احصل على الاتجاهات"
+    "directions": "احصل على الاتجاهات",
+    "embedTitle": "موقع العيادة — خرائط جوجل"
   },
   "error": {
     "notFoundTitle": "الصفحة غير موجودة",
