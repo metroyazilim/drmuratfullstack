@@ -64,9 +64,9 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block">
-              <LanguageSwitcher />
-            </div>
+            {/* Mobilde de navbar'da durur; `collapseLabel` ile dar ekranda
+                yalnızca globe ikonu kalır, satır kalabalıklaşmaz. */}
+            <LanguageSwitcher collapseLabel />
             <Link href="/appointment" className="hidden sm:block">
               <Button variant="primary" size="sm">
                 {tHeader('appointmentCta')}

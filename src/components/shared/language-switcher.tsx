@@ -15,7 +15,21 @@ const languageNames: Record<Locale, string> = {
 
 const supportedLocales: Locale[] = ['tr', 'en', 'ar', 'ru'];
 
-export function LanguageSwitcher({ className }: { className?: string }) {
+type LanguageSwitcherProps = {
+  className?: string;
+  /**
+   * Dar ekranlarda yalnızca globe ikonu bırakır; dil adı ve ok `sm`
+   * altında gizlenir. Mobil navbar'da marka + hamburger ile aynı satırı
+   * paylaştığı için etiket sığmıyor, ikon tek başına da tanınır.
+   * Menü içi kullanımda (yer bol) kapalı bırakılır ve etiket görünür.
+   */
+  collapseLabel?: boolean;
+};
+
+export function LanguageSwitcher({
+  className,
+  collapseLabel = false,
+}: LanguageSwitcherProps) {
   const currentLocale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
@@ -32,13 +46,23 @@ export function LanguageSwitcher({ className }: { className?: string }) {
       <DropdownMenu.Trigger
         aria-label={tA11y('languageSwitcher')}
         className={cn(
-          'border-border-default bg-bg-base text-text-primary hover:bg-bg-surface focus-visible:ring-accent-primary inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+          'border-border-default bg-bg-base text-text-primary hover:bg-bg-surface focus-visible:ring-accent-primary inline-flex items-center gap-1.5 rounded-md border py-1.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+          // Etiket gizlendiğinde buton kare bir ikon hedefine dönüşür;
+          // dokunma alanı dar kalmasın diye yatay boşluk korunur.
+          collapseLabel ? 'px-2.5 sm:px-3' : 'px-3',
           className,
         )}
       >
-        <Globe className="text-accent-primary h-3.5 w-3.5" />
-        <span>{languageNames[currentLocale] || currentLocale}</span>
-        <ChevronDown className="text-text-muted h-3 w-3 opacity-70" />
+        <Globe className="text-accent-primary h-3.5 w-3.5 shrink-0" />
+        <span className={cn(collapseLabel && 'hidden sm:inline')}>
+          {languageNames[currentLocale] || currentLocale}
+        </span>
+        <ChevronDown
+          className={cn(
+            'text-text-muted h-3 w-3 opacity-70',
+            collapseLabel && 'hidden sm:block',
+          )}
+        />
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
