@@ -18,7 +18,6 @@ export type NavHref =
   | '/services'
   | '/blog'
   | '/gallery'
-  | '/video'
   | '/faq'
   | '/appointment'
   | '/contact';
@@ -42,12 +41,7 @@ export const mainNav: readonly NavItem[] = [
   },
   {
     key: 'media',
-    children: [
-      { key: 'gallery', href: '/gallery' },
-      // Video galerisi, klinikten gerçek YouTube kimlikleri gelene kadar
-      // menüde YOK (SPEC-011). Kimlikler gelince bu satır geri açılır:
-      // { key: 'video', href: '/video' },
-    ],
+    children: [{ key: 'gallery', href: '/gallery' }],
   },
   { key: 'blog', href: '/blog' },
   { key: 'contact', href: '/contact' },

@@ -76,12 +76,6 @@ export const routing = defineRouting({
       ar: '/معرض-الصور',
       ru: '/galereya',
     },
-    '/video': {
-      tr: '/video-galeri',
-      en: '/video-gallery',
-      ar: '/معرض-الفيديو',
-      ru: '/video-galereya',
-    },
     '/faq': {
       tr: '/sss',
       en: '/faq',

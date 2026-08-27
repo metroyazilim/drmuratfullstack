@@ -13,9 +13,11 @@ export async function sendFormMails(options: {
   clinic: MailBody;
   user: MailBody;
   userEmail: string;
+  /** MAIL_TO tanımsızsa kullanılacak klinik adresi (clinic.json künyesi). */
+  fallbackTo?: string;
 }): Promise<SendResult> {
   const transport = getTransport();
-  const config = getMailConfig();
+  const config = getMailConfig(options.fallbackTo);
 
   if (!transport || !config) {
     return { clinicSent: false, userSent: false };

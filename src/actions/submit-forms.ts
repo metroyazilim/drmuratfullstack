@@ -90,6 +90,7 @@ export async function submitAppointment(
 
   const { clinicSent } = await sendFormMails({
     userEmail: data.email,
+    fallbackTo: clinic.contact.appointmentEmail,
     clinic: buildMail(
       `${t('appointment.clinicSubject')} — ${data.fullName}`,
       t('appointment.clinicTitle'),
@@ -144,6 +145,7 @@ export async function submitContact(
 
   const { clinicSent } = await sendFormMails({
     userEmail: data.email,
+    fallbackTo: clinic.contact.appointmentEmail,
     clinic: buildMail(
       `${t('contact.clinicSubject')} — ${data.fullName}`,
       t('contact.clinicTitle'),

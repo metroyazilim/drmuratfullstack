@@ -24,7 +24,8 @@ export const legacyRedirects: LegacyRedirect[] = [
   { source: '/randevu-al', destination: '/tr/randevu-al' },
   { source: '/sss', destination: '/tr/sss' },
   { source: '/resim-galerisi', destination: '/tr/galeri' },
-  { source: '/video-galerisi', destination: '/tr/video-galeri' },
+  // Video galerisi kaldırıldı; en yakın içerik foto galerisi.
+  { source: '/video-galerisi', destination: '/tr/galeri' },
 
   // — Hizmetler (Ozon Tedavisi yeni sayfadır, eski karşılığı yoktur) —
   { source: '/hizmetler', destination: '/tr/hizmetler' },

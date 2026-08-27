@@ -13,8 +13,7 @@
     "media": "Medya",
     "mission": "Misyonumuz",
     "vision": "Vizyonumuz",
-    "quality": "Kalite Politikamız",
-    "video": "Video Galerisi"
+    "quality": "Kalite Politikamız"
   },
   "common": {
     "appointment": "Randevu Al",
@@ -98,10 +97,6 @@
     "close": "Kapat",
     "previous": "Önceki görsel",
     "next": "Sonraki görsel"
-  },
-  "video": {
-    "play": "Videoyu oynat",
-    "close": "Kapat"
   },
   "page": {
     "appointmentCta": "Randevu Al"

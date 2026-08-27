@@ -18,7 +18,6 @@ const staticRoutes = [
   '/services',
   '/blog',
   '/gallery',
-  // '/video' — içerik boş olduğu sürece sitemap'e girmez (SPEC-011).
   '/faq',
   '/appointment',
   '/contact',

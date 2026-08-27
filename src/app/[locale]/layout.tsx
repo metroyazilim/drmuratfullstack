@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { fontSans, fontArabic } from '@/lib/fonts';
 import { routing } from '@/i18n/routing';
 import { JsonLd } from '@/components/shared/json-ld';
-import { clinicSchema } from '@/lib/seo/schema';
+import { clinicSchema, physicianSchema, websiteSchema } from '@/lib/seo/schema';
+import { localeUrls } from '@/lib/seo/alternates';
 import { SITE_NAME, SITE_URL } from '@/lib/seo/config';
 import type { Locale } from '@/lib/i18n';
-import { getClinic } from '@/lib/content';
+import { getClinic, listServices, listTeam } from '@/lib/content';
 import { SkipLink } from '@/components/shared/skip-link';
 import { TopBar } from '@/components/shared/top-bar';
 import { Header } from '@/components/shared/header';
@@ -20,6 +21,15 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
+/**
+ * `themeColor` Metadata'da değil Viewport'ta durur (Next 14+).
+ * Değer logonun laciverdi — Android adres çubuğu markayla aynı renkte olur.
+ */
+export const viewport: Viewport = {
+  themeColor: '#012d5b',
+  colorScheme: 'light',
+};
 
 /**
  * Kök metadata yalnızca metadataBase ve başlık şablonunu kurar.
@@ -39,6 +49,13 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: name, template: `%s | ${name}` },
+    applicationName: name,
+    // Bir hekim kliniği: yayıncı ve içerik sahibi aynı varlık.
+    publisher: name,
+    // iOS telefon numaralarını kendi kendine linkler ve <bdi>/adres
+    // bloklarını bozar; telefon linklerini biz zaten veriyoruz.
+    formatDetection: { telephone: false, address: false, email: false },
+    appleWebApp: { capable: false, title: 'Dr. Murat Irmak' },
   };
 }
 
@@ -65,6 +82,25 @@ export default async function LocaleLayout({
   const clinic = getClinic();
   const tFooter = await getTranslations({ locale, namespace: 'footer' });
 
+  const typedLocale = locale as Locale;
+  const homeUrl = localeUrls('/')[typedLocale];
+  const leadPhysician = listTeam(typedLocale).find(
+    (member) => member.name === clinic.doctor.name,
+  );
+
+  /**
+   * Site genelinde geçerli üç varlık: site, klinik, hekim.
+   * `founder`/`employee` referansları boşta kalmasın diye hekim şeması
+   * klinikle birlikte, her sayfada basılır.
+   */
+  const siteSchema = [
+    websiteSchema(typedLocale, homeUrl),
+    clinicSchema(typedLocale, tFooter('about'), listServices(typedLocale)),
+    ...(physicianSchema(typedLocale, leadPhysician)
+      ? [physicianSchema(typedLocale, leadPhysician)!]
+      : []),
+  ];
+
   return (
     <html
       lang={locale}
@@ -74,8 +110,8 @@ export default async function LocaleLayout({
       }`}
     >
       <body className="bg-bg-base text-text-primary antialiased">
-        {/* Klinik tekil bir varlık; her sayfada @id ile referans verilir. */}
-        <JsonLd data={clinicSchema(locale as Locale, tFooter('about'))} />
+        {/* Klinik ve hekim tekil varlıklar; her sayfada @id ile referans verilir. */}
+        <JsonLd data={siteSchema} />
         <NextIntlClientProvider messages={messages}>
           <SkipLink />
           <TopBar />

@@ -10,7 +10,7 @@ import { ContactForm } from '@/components/shared/contact-form';
 import { JsonLd } from '@/components/shared/json-ld';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { localeUrls } from '@/lib/seo/alternates';
-import { breadcrumbSchema } from '@/lib/seo/schema';
+import { breadcrumbSchema, contactPageSchema } from '@/lib/seo/schema';
 import { getClinic, getListing } from '@/lib/content';
 import type { Locale } from '@/lib/i18n';
 
@@ -56,7 +56,12 @@ export default async function ContactPage({ params }: PageProps) {
 
   return (
     <>
-      <JsonLd data={breadcrumbSchema(crumbs)} />
+      <JsonLd
+        data={[
+          contactPageSchema(typedLocale, pageUrls[typedLocale], listing.banner.title),
+          breadcrumbSchema(crumbs),
+        ]}
+      />
 
       <PageBanner
         title={listing.banner.title}

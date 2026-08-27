@@ -34,7 +34,6 @@ import type {
   LegalFrontmatter,
   FaqItem,
   GalleryItem,
-  VideoItem,
   Clinic,
   Home,
   ListingBase,
@@ -464,31 +463,7 @@ export const getGallery = cache((locale: Locale): GalleryItem[] => {
   }));
 });
 
-// 10. Videos JSON API
-export const getVideos = cache((locale: Locale): VideoItem[] => {
-  const videosPath = path.join(CONTENT_DIR, 'video', 'videos.json');
-  const metaPath = path.join(CONTENT_DIR, 'video', `meta.${locale}.json`);
-
-  const videosContent = readFileContent(videosPath);
-  const metaContent = readFileContent(metaPath);
-
-  if (!videosContent || !metaContent) return [];
-
-  const videos: Array<{ id: string; youtubeId: string; coverImage: string }> =
-    JSON.parse(videosContent);
-  const meta: Record<string, { title: string; description: string }> =
-    JSON.parse(metaContent);
-
-  return videos.map((video) => ({
-    id: video.id,
-    youtubeId: video.youtubeId,
-    coverImage: video.coverImage,
-    title: meta[video.id]?.title || '',
-    description: meta[video.id]?.description || '',
-  }));
-});
-
-// 11. Clinic JSON API
+// 10. Clinic JSON API
 export const getClinic = cache((): Clinic => {
   const filePath = path.join(CONTENT_DIR, 'clinic.json');
   const content = readFileContent(filePath);
@@ -524,7 +499,6 @@ type ListingResultMap = {
   services: ServicesListing;
   blog: ListingBase;
   gallery: ListingBase;
-  video: ListingBase;
   team: TeamListing;
   faq: FaqListing;
   appointment: AppointmentListing;

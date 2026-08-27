@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { getFaq, getHome, listPosts, listServices } from '@/lib/content';
 import type { Locale } from '@/lib/i18n';
-import { JsonLd } from '@/components/shared/json-ld';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { localeUrls } from '@/lib/seo/alternates';
-import { websiteSchema } from '@/lib/seo/schema';
 import { Hero } from '@/components/sections/hero';
 import { AboutSummary } from '@/components/sections/about-summary';
 import { ServicesGrid } from '@/components/sections/services-grid';
@@ -50,12 +48,10 @@ export default async function HomePage({ params }: PageProps) {
   const services = listServices(typedLocale).slice(0, FEATURED_SERVICES);
   const { items: posts } = listPosts(typedLocale, { limit: LATEST_POSTS });
   const faq = getFaq(typedLocale).slice(0, HOME_FAQ_ITEMS);
-  const urls = localeUrls('/');
 
   return (
     <>
-      <JsonLd data={websiteSchema(typedLocale, urls[typedLocale])} />
-
+      {/* WebSite / MedicalClinic / Physician şemaları layout'ta basılır. */}
       <Hero hero={home.hero} />
       <AboutSummary about={home.about} />
       <ServicesGrid copy={home.services} services={services} />

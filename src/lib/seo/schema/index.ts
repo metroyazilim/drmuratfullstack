@@ -1,5 +1,6 @@
 import type {
   BlogPosting,
+  ContactPage,
   DayOfWeek,
   Service as ServiceSchemaType,
   BreadcrumbList,
@@ -12,12 +13,62 @@ import type {
   WithContext,
 } from 'schema-dts';
 import { getClinic } from '@/lib/content';
-import type { Clinic, FaqItem, GalleryItem, Post, Service, TeamMember } from '@/lib/content/types';
-import type { Locale } from '@/lib/i18n';
+import { getPathname } from '@/i18n/navigation';
+import type {
+  Clinic,
+  FaqItem,
+  GalleryItem,
+  Post,
+  Service,
+  ServiceSummary,
+  TeamMember,
+  TeamSummary,
+} from '@/lib/content/types';
+import { routing, type Locale } from '@/lib/i18n';
 import { SITE_NAME, absoluteUrl } from '../config';
 
 /** Klinik tekil bir varlıktır; her şemada yeniden tanımlanmaz, @id ile işaret edilir. */
 export const CLINIC_ID = absoluteUrl('/#clinic');
+
+/** Hekim de tekil: ekip sayfası, klinik şeması ve yazar alanı aynı @id'yi kullanır. */
+export const PHYSICIAN_ID = absoluteUrl('/#physician');
+
+/** Google logo alanında opak ve kare görsel bekler. */
+const LOGO_URL = absoluteUrl('/images/brand/logo-square.png');
+
+/**
+ * `image`, işletmenin GERÇEK fotoğrafı olmalı — logo koymak Google'ın
+ * yerel panel görselini markaya değil, boş bir amblem karesine düşürür.
+ */
+const CLINIC_IMAGES = [
+  absoluteUrl('/images/gallery/klinik-giris.webp'),
+  absoluteUrl('/images/gallery/muayene-odasi.webp'),
+  absoluteUrl('/images/gallery/uygulama-odasi.webp'),
+];
+
+const LANGUAGE_NAMES: Record<Locale, string> = {
+  tr: 'Turkish',
+  en: 'English',
+  ar: 'Arabic',
+  ru: 'Russian',
+};
+
+const SUPPORTED_LANGUAGES = routing.locales.map(
+  (locale) => LANGUAGE_NAMES[locale],
+);
+
+/**
+ * Hizmet detay URL'i. Yol dile göre çevrildiği için (`/hizmetler`,
+ * `/uslugi`, `/الخدمات`) elle birleştirilmez; routing tablosundan çözülür.
+ */
+function serviceUrl(locale: Locale, slug: string): string {
+  return absoluteUrl(
+    getPathname({
+      locale,
+      href: { pathname: '/services/[slug]', params: { slug } },
+    }),
+  );
+}
 
 function postalAddress(clinic: Clinic) {
   return {
@@ -38,9 +89,15 @@ function postalAddress(clinic: Clinic) {
 export function clinicSchema(
   locale: Locale,
   description: string,
+  /**
+   * Klinikte sunulan hizmetler. Verildiğinde `availableService` üretilir —
+   * yanıt motorları "bu klinik ne yapıyor?" sorusunu şemadan cevaplayabilir.
+   */
+  services: ServiceSummary[] = [],
 ): WithContext<MedicalClinic> {
   const clinic = getClinic();
   const sameAs = Object.values(clinic.social).filter(Boolean) as string[];
+  const geo = clinic.address.geo;
 
   return {
     '@context': 'https://schema.org',
@@ -53,19 +110,50 @@ export function clinicSchema(
     telephone: clinic.contact.phone,
     email: clinic.contact.email,
     address: postalAddress(clinic),
+    logo: LOGO_URL,
+    image: CLINIC_IMAGES,
     medicalSpecialty: 'https://schema.org/Dermatology',
+    // Kliniği tekil bir varlık olarak tanıtan hekim; ekip sayfasıyla aynı @id.
+    founder: { '@id': PHYSICIAN_ID },
+    employee: { '@id': PHYSICIAN_ID },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      telephone: clinic.contact.phone,
+      email: clinic.contact.email,
+      availableLanguage: SUPPORTED_LANGUAGES,
+    },
     areaServed: [
       { '@type': 'City', name: 'İstanbul' },
       { '@type': 'AdministrativeArea', name: 'Küçükçekmece' },
     ],
+    ...(services.length > 0
+      ? {
+          // Yalnızca ad + URL: aynı nesne her sayfada basıldığı için
+          // açıklamaları da taşımak HTML'i gereksiz şişirirdi.
+          availableService: services.map((service) => ({
+            '@type': 'MedicalProcedure' as const,
+            name: service.title,
+            url: serviceUrl(locale, service.slug),
+          })),
+          knowsAbout: services.map((service) => service.title),
+        }
+      : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
-    // Koordinat ve çalışma saatleri doğrulanmadı — uydurulmaz, boşsa üretilmez.
-    ...(clinic.address.geo
+    // Harita bağlantısı koordinattan türetilir; elle yazılan bir Maps
+    // linki adres değişince sessizce yanlış yeri göstermeye başlar.
+    ...(geo
+      ? {
+          hasMap: `https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`,
+        }
+      : {}),
+    // Çalışma saatleri doğrulanmadı — uydurulmaz, boşsa üretilmez.
+    ...(geo
       ? {
           geo: {
             '@type': 'GeoCoordinates',
-            latitude: clinic.address.geo.latitude,
-            longitude: clinic.address.geo.longitude,
+            latitude: geo.latitude,
+            longitude: geo.longitude,
           },
         }
       : {}),
@@ -82,6 +170,70 @@ export function clinicSchema(
           })),
         }
       : {}),
+  };
+}
+
+/**
+ * Kliniği tanıtan hekim.
+ *
+ * `MedicalClinic.founder`/`employee` bu @id'ye işaret ettiği için şema
+ * klinikle BİRLİKTE basılır — aksi halde grafikte boşta bir referans kalır.
+ * Bir sağlık sitesinde E-E-A-T'nin taşıyıcısı hekimin kimliğidir; bunu
+ * yalnızca ekip sayfasında bırakmak sinyali tek sayfaya hapseder.
+ *
+ * Ekip listesinde eşleşen kayıt yoksa `null` döner — uydurma bir hekim
+ * kimliği üretmektense şemayı hiç basmamak doğru.
+ */
+export function physicianSchema(
+  locale: Locale,
+  member: TeamSummary | undefined,
+): WithContext<Person> | null {
+  if (!member) return null;
+
+  const clinic = getClinic();
+
+  return {
+    '@context': 'https://schema.org',
+    // schema.org'da `Physician` bir KURUM tipidir (MedicalOrganization'dan
+    // türer), insan değil. Hekimin kendisi `Person`; tıbbi uzmanlık
+    // MedicalClinic tarafında `medicalSpecialty` ile zaten beyan ediliyor.
+    '@type': 'Person',
+    '@id': PHYSICIAN_ID,
+    name: member.name,
+    jobTitle: member.role,
+    url: absoluteUrl(
+      getPathname({
+        locale,
+        href: { pathname: '/team/[slug]', params: { slug: member.slug } },
+      }),
+    ),
+    ...(member.photo ? { image: absoluteUrl(member.photo) } : {}),
+    telephone: clinic.contact.phone,
+    email: clinic.contact.email,
+    address: postalAddress(clinic),
+    worksFor: { '@id': CLINIC_ID },
+    knowsLanguage: SUPPORTED_LANGUAGES,
+  };
+}
+
+/**
+ * İletişim sayfası. `ContactPage` + `mainEntity` → klinik; Google'a
+ * "kliniğin künyesi BU sayfada" der, NAP sinyalini tek yere bağlar.
+ */
+export function contactPageSchema(
+  locale: Locale,
+  url: string,
+  name: string,
+): WithContext<ContactPage> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    '@id': `${url}#contact`,
+    name,
+    url,
+    inLanguage: locale,
+    mainEntity: { '@id': CLINIC_ID },
+    isPartOf: { '@id': `${absoluteUrl(`/${locale}`)}#website` },
   };
 }
 
@@ -152,15 +304,24 @@ export function postSchema(
   };
 }
 
+/**
+ * Ekip üyesi.
+ *
+ * Kliniği kuran hekim için `Person` değil `Physician` üretilir ve klinik
+ * şemasındaki `founder`/`employee` ile AYNI @id kullanılır — aynı insan
+ * için iki ayrı varlık basmak bilgi grafiğinde ikizleme yaratır.
+ */
 export function personSchema(
   member: TeamMember,
   locale: Locale,
   url: string,
 ): WithContext<Person> {
+  const isLeadPhysician = member.frontmatter.name === getClinic().doctor.name;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    '@id': `${url}#person`,
+    '@id': isLeadPhysician ? PHYSICIAN_ID : `${url}#person`,
     name: member.frontmatter.name,
     jobTitle: member.frontmatter.role,
     url,

@@ -13,8 +13,7 @@
     "media": "Media",
     "mission": "Our Mission",
     "vision": "Our Vision",
-    "quality": "Quality Policy",
-    "video": "Video Gallery"
+    "quality": "Quality Policy"
   },
   "common": {
     "appointment": "Book Appointment",
@@ -98,10 +97,6 @@
     "close": "Close",
     "previous": "Previous image",
     "next": "Next image"
-  },
-  "video": {
-    "play": "Play video",
-    "close": "Close"
   },
   "page": {
     "appointmentCta": "Book Appointment"

@@ -154,14 +154,6 @@ export interface GalleryItem {
   alt: string;
 }
 
-export interface VideoItem {
-  id: string;
-  youtubeId: string;
-  coverImage: string;
-  title: string;
-  description: string;
-}
-
 export interface Clinic {
   name: string;
   legalName: string;

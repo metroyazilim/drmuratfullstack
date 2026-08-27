@@ -371,10 +371,9 @@ export const contactListingSchema = listingBaseSchema.extend({
 
 export const listingSchemas = {
   services: servicesListingSchema,
-  // Blog, galeri ve video listeleri `approach` taşımaz; taban şema yeterli.
+  // Blog ve galeri listeleri `approach` taşımaz; taban şema yeterli.
   blog: listingBaseSchema,
   gallery: listingBaseSchema,
-  video: listingBaseSchema,
   team: teamListingSchema,
   faq: faqListingSchema,
   appointment: appointmentListingSchema,

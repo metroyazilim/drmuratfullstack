@@ -6,6 +6,12 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
+    /**
+     * Optimize edilmiş görseller 1 yıl önbellekte kalır.
+     * Kaynak dosyalar sürümlenmiş (içerik değişince dosya adı değişiyor),
+     * bu yüzden uzun TTL güvenli ve tekrar ziyarette LCP'yi düşürüyor.
+     */
+    minimumCacheTTL: 31_536_000,
   },
   poweredByHeader: false,
   compress: true,
@@ -36,6 +42,20 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+      {
+        /**
+         * public/ altındaki görseller ve ikonlar değişmez kabul edilir;
+         * güncellenmeleri gerektiğinde dosya adı değişiyor. `immutable`,
+         * tekrar ziyarette koşullu istek bile göndermez.
+         */
+        source: '/:path(images|icons)/:file*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
