@@ -7,25 +7,23 @@
 
 ---
 
-## Ortam kısıtları (önce okuyun)
+## Durum: YAYINDA ✅
 
-Bu denetim **canlı siteye değil, kod tabanına** yapıldı. Sebebi:
+Denetim kod tabanı üzerinde başladı (o sırada alan adı hâlâ eski Apache sunucusunu
+gösteriyordu). Denetim sırasında DNS Vercel'e taşındı ve tüm değişiklikler
+**production'a deploy edildi**. Canlı doğrulama aşağıda.
 
-`www.drmuratirmak.com` şu anda **Apache üzerinde eski siteyi** sunuyor (`168.119.197.61`);
-bu repodaki Next.js sürümü henüz yayında değil. Canlı URL'e script çalıştırmak
-(PageSpeed, robots checker, kırık link taraması) **başka bir siteyi** ölçerdi.
+**Yayın adresi:** https://www.drmuratirmak.com (Vercel, `fra1`)
 
-Bunun sonucu olarak aşağıdakiler **ölçülemedi** ve güven düzeyi `Hipotez`:
+Hâlâ **ölçülemeyen** tek şey — güven düzeyi `Hipotez`:
 
 | Ölçülemeyen | Neden | Ne zaman ölçülebilir |
 |---|---|---|
-| Core Web Vitals (LCP / INP / CLS) | Saha verisi yok, kod yayında değil | Yayın + 28 gün CrUX verisi |
-| Gerçek robots.txt / sitemap yanıtı | Eski site sunuyor | Yayından hemen sonra |
-| 301 zincirlerinin canlı davranışı | Aynı | Yayından hemen sonra |
+| Core Web Vitals (LCP / INP / CLS) | Saha (CrUX) verisi birikmedi | Yayın + 28 gün |
 | Backlink profili | Alan adı düzeyinde, ayrı araç gerekir | Ahrefs/GSC bağlandığında |
 
-Yapılan her şey **build çıktısı üzerinden doğrulandı** (`npm run check` → exit 0,
-157 statik sayfa, 144 sitemap URL'i) ve yerel dev sunucusunda tarayıcıyla test edildi.
+Yapılan her şey hem **build çıktısı** (`npm run check` → exit 0, 157 statik sayfa)
+hem de **canlı site** üzerinde doğrulandı.
 
 ---
 
@@ -84,6 +82,33 @@ Yapılan her şey **build çıktısı üzerinden doğrulandı** (`npm run check`
   `MAIL_TO` boşsa `clinic.json → contact.appointmentEmail`'e
   (`dr_mirmak@hotmail.com`) düşüyor. 4 senaryo test edildi (aşağıda).
 - **Güven:** `Doğrulandı` (birim testi çalıştırıldı).
+
+---
+
+### 3b. Canlı sitedeki tüm canonical'lar `.vercel.app` adresini gösteriyordu
+
+Bu bulgu denetimin ilk turunda görülemedi — site o sırada henüz Vercel'de değildi.
+Deploy sorunu araştırılırken ortaya çıktı ve **canlıda aktif bir hataydı.**
+
+- **Kanıt:** Vercel projesinde **hiçbir ortam değişkeni tanımlı değildi**
+  (`vercel env ls` → *No Environment Variables found*). `NEXT_PUBLIC_SITE_URL`
+  olmayınca `resolveSiteUrl()` tasarım gereği `VERCEL_URL`'e düşüyor:
+
+  ```html
+  <link rel="canonical" href="https://drmuratirmak-164u84b51-metro-yazilim.vercel.app/tr"/>
+  ```
+
+  `robots.txt` içindeki `Host:` ve `Sitemap:` satırları da aynı adresi veriyordu.
+- **Etki:** `www.drmuratirmak.com` kendi sayfalarının asıl adresi olarak geçici bir
+  `.vercel.app` URL'i beyan ediyordu. Google canonical'a uyar — gerçek alan adının
+  tamamen indeksten düşmesine yol açabilecek bir hata.
+- **Düzeltme:** `NEXT_PUBLIC_SITE_URL=https://www.drmuratirmak.com` Vercel'de
+  **yalnızca Production** ortamına eklendi. Preview'a bilinçli olarak
+  EKLENMEDİ — `config.ts` orada Vercel URL'ine düşerek preview içeriğinin canlı
+  siteyi kannibalize etmesini engelliyor; oraya production domainini yazmak o
+  korumayı bozardı.
+- **Doğrulama (canlı):** canonical, dört hreflang, x-default ve robots.txt'in
+  `Host`/`Sitemap` satırlarının hepsi artık `https://www.drmuratirmak.com`.
 
 ---
 
@@ -318,6 +343,50 @@ public/images/gallery/video-botoks-cover.webp   (hiçbir yerde referans edilmiyo
 
 ---
 
+## Yayın altyapısı — çözülen iki tuzak
+
+Bu ikisi kod hatası değil, **Vercel yapılandırma tuzağıydı**; ikisi de deploy'u
+tamamen engelliyordu ve bulunması zaman aldı.
+
+### Vercel Hobby + private repo → commit yazarı kontrolü
+
+Push'lar deploy tetiklemiyordu. Vercel'in verdiği hata:
+
+> *The deployment was blocked because the commit author did not have contributing
+> access to the project on Vercel. The Hobby Plan does not support collaboration
+> for private repositories.*
+
+Bu mesaj yanıltıcı: Pro'ya geçmek gerekmiyordu. Hobby planında **private** repolarda
+Vercel, deploy'u tetikleyen commit'in yazarının Vercel hesabı sahibiyle aynı kişi
+olmasını şart koşuyor. Git geçmişinde kimlik kaymıştı:
+
+```
+05c412c  arslanberattdev <arslanberattdev@gmail.com>     ← son 3 commit
+8801c68  arslanberattdev <arslanberattdev@gmail.com>
+07f9980  arslanberattdev <arslanberattdev@gmail.com>
+a6a4a2e  Muhammet Berat Arslan <info@metroyazilim.com>   ← Vercel hesabıyla eşleşen kimlik
+```
+
+Vercel hesabı `metroyazilim` (= `info@metroyazilim.com`), repo'nun tek
+collaborator'ı da o. Yani gerçekte hiç ekip çalışması yoktu; sorun tamamen
+commit metadata'sındaydı.
+
+**Çözüm:** reponun `user.email`'i `info@metroyazilim.com`'a çekildi (global ayara
+dokunulmadı, diğer projeler etkilenmedi), son commit'in yazarı düzeltildi ve
+`main` force-push edildi. Ağaç hash'i birebir aynı kaldı
+(`e7b224c…` → `e7b224c…`) — tek satır kod değişmedi.
+
+> **Kalıcı not:** commit mesajlarındaki `Co-Authored-By:` satırı da ikinci bir
+> "yazar" ekliyor ve aynı blokajın bilinen tetikleyicilerinden. Bu repoda
+> kullanılmıyor.
+
+### Ortam değişkenleri hiç tanımlı değildi
+
+Yukarıdaki *bulgu 3b*'ye yol açan durum. `NEXT_PUBLIC_SITE_URL` eklendi;
+**SMTP değişkenleri hâlâ boş** — formlar canlıda mail göndermiyor (bkz. ACTION-PLAN P0).
+
+---
+
 ## Doğrulama kanıtları
 
 **Build kapısı**
@@ -327,6 +396,22 @@ npm run check   → exit 0
                   içerik doğrulama ✅ | seo:check ✅ (31 yönlendirme, 24 varlık, 4 dil)
                   eslint ✅ | tsc --noEmit ✅ | next build ✅ (157 statik sayfa)
 sitemap         → 144 URL
+```
+
+**Canlı site doğrulaması** — https://www.drmuratirmak.com
+
+```
+canonical / hreflang        → hepsi https://www.drmuratirmak.com/*  ✓
+robots.txt Host + Sitemap   → https://www.drmuratirmak.com          ✓
+sitemap.xml                 → 144 URL, video içermiyor              ✓
+JSON-LD                     → WebSite | MedicalClinic | Person(#physician) ✓
+/llms.txt                   → 200                                   ✓
+/manifest.webmanifest       → 200                                   ✓
+/favicon.ico /icon.png /apple-icon.png /icons/icon-192.png → 200    ✓
+/images/og/default.webp /images/brand/logo.png            → 200     ✓
+H1                          → "Medikal estetikte kişiye özel yaklaşım."  ✓
+/tr/video-galeri, /en/video-gallery, /ru/video-galereya   → 404     ✓
+/video-galerisi             → 308 → /tr/galeri                      ✓
 ```
 
 **Tarayıcı doğrulaması** (yerel dev sunucusu)

@@ -20,6 +20,9 @@ Tarih: 27 Ağustos 2026
 | 8 | `/video` galerisi **tamamen kaldırıldı** (rota, bileşen, içerik, görseller) + `/video-galerisi` 301'i `/tr/galeri`'ye yönlendirildi | 4 ince sayfa gitti, 301 artık 404'e gitmiyor |
 | 9 | Statik görsellerde 1 yıllık `immutable` önbellek | Tekrar ziyarette LCP |
 | 10 | 2 uzun başlık/açıklama kısaltıldı | SERP'te kırpılma önlendi |
+| 11 | **`NEXT_PUBLIC_SITE_URL` Vercel'e eklendi** | Canlıdaki tüm canonical/hreflang `.vercel.app` yerine gerçek alan adını gösteriyor |
+| 12 | **Vercel deploy blokajı çözüldü** | Commit yazarı Vercel hesabıyla eşleştirildi; push → otomatik deploy artık çalışıyor |
+| 13 | **Production'a deploy edildi ve canlı doğrulandı** | Tüm değişiklikler https://www.drmuratirmak.com adresinde yayında |
 
 ---
 
@@ -58,18 +61,18 @@ NEXT_PUBLIC_SITE_URL = https://www.drmuratirmak.com
 `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Boş bırakılırsa oran
 sınırı atlanır ve form çalışmaya devam eder — ama spam koruması olmaz.
 
-### 3. DNS'i Vercel'e yönlendir
+### 3. ~~DNS'i Vercel'e yönlendir~~ ✅ TAMAMLANDI
 
-`www.drmuratirmak.com` şu anda **eski Apache sitesini** sunuyor. Bu repodaki
-31 adet 301 yönlendirmesi ancak yeni site yayına alınınca devreye girer.
-Yayın anına kadar buradaki hiçbir SEO iyileştirmesi Google tarafından görülmez.
+Alan adı Vercel'e taşındı, yeni site yayında, 31 adet 301 devrede.
 
-### 4. Yayından hemen sonra — Google Search Console
+### 4. Google Search Console — **sıradaki iş**
 
 - Alan adını doğrula (4 dil için tek mülk yeter, hreflang'i GSC kendisi çözer)
-- `sitemap.xml` gönder (144 URL)
+- `sitemap.xml` gönder (144 URL — canlıda doğrulandı)
 - **URL Denetimi** ile eski 3–5 URL'i test et → 301'ler tek adımda mı gidiyor?
 - "Kapsam" raporunda ilk hafta 404 patlaması olup olmadığını izle
+- ⚠️ Site bir süre `.vercel.app` canonical'larıyla yayındaydı. Eğer o dönemde
+  indekslendiyse, GSC'de gerçek alan adının yeniden taranmasını iste
 
 ---
 
