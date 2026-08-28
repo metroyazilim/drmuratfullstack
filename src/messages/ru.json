@@ -166,7 +166,8 @@
   },
   "map": {
     "directions": "Построить маршрут",
-    "embedTitle": "Расположение клиники — Google Карты"
+    "embedTitle": "Расположение клиники — Google Карты",
+    "goToLocation": "Открыть на карте"
   },
   "error": {
     "notFoundTitle": "Страница не найдена",
@@ -176,5 +177,10 @@
     "genericTitle": "Что-то пошло не так",
     "genericBody": "Произошла непредвиденная ошибка. Попробуйте перезагрузить страницу.",
     "retry": "Повторить"
+  },
+  "social": {
+    "instagramFollow": "Подписаться в Instagram",
+    "instagramHandle": "@dr.muratirmak",
+    "instagramAria": "Доктор Мурат Ирмак в Instagram — откроется в новой вкладке"
   }
 }

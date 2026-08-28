@@ -166,7 +166,8 @@
   },
   "map": {
     "directions": "احصل على الاتجاهات",
-    "embedTitle": "موقع العيادة — خرائط جوجل"
+    "embedTitle": "موقع العيادة — خرائط جوجل",
+    "goToLocation": "الذهاب إلى الموقع"
   },
   "error": {
     "notFoundTitle": "الصفحة غير موجودة",
@@ -176,5 +177,10 @@
     "genericTitle": "حدث خطأ ما",
     "genericBody": "حدث خطأ غير متوقع. يمكنك محاولة إعادة تحميل الصفحة.",
     "retry": "حاول مجدداً"
+  },
+  "social": {
+    "instagramFollow": "تابعنا على إنستغرام",
+    "instagramHandle": "@dr.muratirmak",
+    "instagramAria": "صفحة الدكتور مراد إرماك على إنستغرام — تُفتح في تبويب جديد"
   }
 }

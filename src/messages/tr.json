@@ -166,7 +166,8 @@
   },
   "map": {
     "directions": "Yol tarifi al",
-    "embedTitle": "Klinik konumu — Google Haritalar"
+    "embedTitle": "Klinik konumu — Google Haritalar",
+    "goToLocation": "Konuma Git"
   },
   "error": {
     "notFoundTitle": "Sayfa bulunamadı",
@@ -176,5 +177,10 @@
     "genericTitle": "Bir şeyler ters gitti",
     "genericBody": "Beklenmeyen bir hata oluştu. Sayfayı yeniden yüklemeyi deneyebilirsiniz.",
     "retry": "Tekrar dene"
+  },
+  "social": {
+    "instagramFollow": "Instagram'da Takip Et",
+    "instagramHandle": "@dr.muratirmak",
+    "instagramAria": "Dr. Murat Irmak Instagram sayfası — yeni sekmede açılır"
   }
 }

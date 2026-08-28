@@ -1,17 +1,19 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { SectionLabel } from '@/components/ui/section-label';
 import { PageBanner } from '@/components/shared/page-banner';
 import { ContactForm } from '@/components/shared/contact-form';
 import { JsonLd } from '@/components/shared/json-ld';
+import { DirectionsButton } from '@/components/shared/directions-button';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { localeUrls } from '@/lib/seo/alternates';
 import { breadcrumbSchema, contactPageSchema } from '@/lib/seo/schema';
 import { getClinic, getListing } from '@/lib/content';
+import { mapsUrl } from '@/lib/utils/maps';
 import type { Locale } from '@/lib/i18n';
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -50,9 +52,7 @@ export default async function ContactPage({ params }: PageProps) {
     { name: t('contact'), url: pageUrls[typedLocale] },
   ];
 
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    clinic.address.formatted,
-  )}`;
+  const directionsUrl = mapsUrl(clinic.address);
 
   return (
     <>
@@ -88,6 +88,12 @@ export default async function ContactPage({ params }: PageProps) {
                   <address className="text-text-inverse mt-1.5 text-sm not-italic leading-relaxed">
                     {clinic.address.formatted}
                   </address>
+                  <DirectionsButton
+                    href={directionsUrl}
+                    label={tMap('goToLocation')}
+                    size="sm"
+                    className="mt-3"
+                  />
                 </li>
 
                 <li className="border-border-inverse border-b pb-5">
@@ -151,15 +157,15 @@ export default async function ContactPage({ params }: PageProps) {
               <p className="text-text-primary text-sm font-semibold">
                 {listing.map.label}
               </p>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-primary hover:text-accent-hover mt-2 inline-flex items-center gap-1.5 text-xs font-semibold transition-colors"
-              >
-                {tMap('directions')}
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
+              <p className="text-text-muted mt-1 text-xs leading-relaxed">
+                {clinic.address.formatted}
+              </p>
+              <DirectionsButton
+                href={directionsUrl}
+                label={tMap('goToLocation')}
+                size="sm"
+                className="mt-3 w-full"
+              />
             </div>
           </div>
         </Container>

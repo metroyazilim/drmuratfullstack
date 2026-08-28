@@ -4,6 +4,8 @@ import { getAlternates, getClinic, listEntityIds } from '@/lib/content';
 import { Container } from '@/components/ui/container';
 import { Link } from '@/lib/i18n';
 import { footerNav } from '@/lib/navigation';
+import { DirectionsButton } from './directions-button';
+import { mapsUrl } from '@/lib/utils/maps';
 import { Brand } from './brand';
 import type { Locale } from '@/lib/i18n';
 
@@ -170,13 +172,23 @@ export async function Footer({ locale }: { locale: Locale }) {
           görünüm alanına girmeden yüklenmez ve LCP'yi etkilemez.
           `hl` parametresi harita arayüzünü aktif dile çevirir. */}
       {geo && (
-        <div className="border-border-inverse border-t">
+        <div className="border-border-inverse relative border-t">
           <iframe
             title={tMap('embedTitle')}
             src={`https://maps.google.com/maps?q=${geo.latitude},${geo.longitude}&z=17&hl=${locale}&output=embed`}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="block h-72 w-full border-0 md:h-96"
+          />
+          {/* Gömülü harita yalnızca gösterir; navigasyonu kullanıcının
+              kendi harita uygulamasında açan buton üstüne bindirilir.
+              Üst-bitiş köşesi Google'ın kendi denetimlerinin (sol üstte
+              "büyük haritada göster", altta yakınlaştırma) dışında kalır. */}
+          <DirectionsButton
+            href={mapsUrl(clinic.address)}
+            label={tMap('goToLocation')}
+            variant="onImage"
+            className="absolute end-4 top-4 shadow-lg md:end-6 md:top-6"
           />
         </div>
       )}

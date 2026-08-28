@@ -166,7 +166,8 @@
   },
   "map": {
     "directions": "Get directions",
-    "embedTitle": "Clinic location — Google Maps"
+    "embedTitle": "Clinic location — Google Maps",
+    "goToLocation": "Go to Location"
   },
   "error": {
     "notFoundTitle": "Page not found",
@@ -176,5 +177,10 @@
     "genericTitle": "Something went wrong",
     "genericBody": "An unexpected error occurred. You can try reloading the page.",
     "retry": "Try again"
+  },
+  "social": {
+    "instagramFollow": "Follow on Instagram",
+    "instagramHandle": "@dr.muratirmak",
+    "instagramAria": "Dr. Murat Irmak on Instagram — opens in a new tab"
   }
 }

@@ -1,11 +1,21 @@
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
+import { InstagramIcon } from '@/components/shared/instagram-icon';
 import { Link } from '@/lib/i18n';
 import type { Home } from '@/lib/content/types';
 
+type HeroProps = {
+  hero: Home['hero'];
+  /** clinic.json'daki sosyal hesap; tanımsızsa rozet hiç basılmaz. */
+  instagram?: string;
+};
+
 /** Hero görseli sayfanın LCP'sidir → priority. Sayfada tek priority budur. */
-export function Hero({ hero }: { hero: Home['hero'] }) {
+export async function Hero({ hero, instagram }: HeroProps) {
+  const t = await getTranslations('social');
+
   return (
     <Container className="pt-6">
       <div className="relative overflow-hidden rounded-xl">
@@ -59,6 +69,30 @@ export function Hero({ hero }: { hero: Home['hero'] }) {
                 </Button>
               </Link>
             </div>
+
+            {/* Instagram rozeti butonların hemen altında: randevu akışını
+                bölmemesi için ikincil ağırlıkta, cam yüzeyli bir pill. */}
+            {instagram && (
+              <a
+                href={instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t('instagramAria')}
+                className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-white/25 bg-white/10 p-1.5 pe-4 backdrop-blur-md transition-colors hover:border-white/45 hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none md:mt-4"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_107%,#fdf497_0%,#fd5949_45%,#d6249f_60%,#285AEB_90%)]">
+                  <InstagramIcon className="h-4 w-4 text-white" />
+                </span>
+                <span className="text-start leading-tight">
+                  <span className="block text-xs font-semibold text-white">
+                    {t('instagramFollow')}
+                  </span>
+                  <span className="block text-[11px] text-white/70">
+                    {t('instagramHandle')}
+                  </span>
+                </span>
+              </a>
+            )}
           </div>
         </div>
 
