@@ -1,12 +1,12 @@
 import Image from 'next/image';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import { Monogram } from './monogram';
 import type { TeamSummary } from '@/lib/content/types';
 
 export function TeamCard({ member }: { member: TeamSummary }) {
   return (
     <Link
-      href={{ pathname: '/team/[slug]', params: { slug: member.slug } }}
+      href={`/ekibimiz/${member.slug}`}
       className="border-border-default hover:border-accent-primary focus-visible:ring-accent-primary block overflow-hidden rounded-lg border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
     >
       <div className="relative h-72">

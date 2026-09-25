@@ -1,61 +1,29 @@
 import type { Metadata } from 'next';
-import { getPathname } from '@/i18n/navigation';
-import { routing, type Locale } from '@/lib/i18n';
-import { absoluteUrl, X_DEFAULT_LOCALE } from './config';
+import { ROUTE_PATHS, type Locale } from '@/lib/site-routes';
+import { absoluteUrl } from './config';
 
-type Href = Parameters<typeof getPathname>[0]['href'];
+type StaticHref = keyof typeof ROUTE_PATHS;
 
-/**
- * Bir route'un dört dildeki mutlak URL'i.
- * Karşılıklılık (A→B ise B→A) burada yapısal olarak garanti edilir;
- * hreflang setleri elle yazılmaz.
- */
-export function localeUrls(href: Href): Record<Locale, string> {
-  const entries = routing.locales.map((locale) => [
-    locale,
-    absoluteUrl(getPathname({ locale, href })),
-  ]);
+type DetailPathname = '/services/[slug]' | '/blog/[slug]' | '/team/[slug]' | '/legal/[slug]';
 
-  return Object.fromEntries(entries) as Record<Locale, string>;
+const DETAIL_BASES: Record<DetailPathname, string> = {
+  '/services/[slug]': '/hizmetler',
+  '/blog/[slug]': '/blog',
+  '/team/[slug]': '/ekibimiz',
+  '/legal/[slug]': '/yasal',
+};
+
+export function localeUrls(href: StaticHref): Record<Locale, string> {
+  return { tr: absoluteUrl(ROUTE_PATHS[href]) };
 }
 
-/**
- * Detay sayfaları için: slug dile göre değiştiğinden her locale kendi
- * slug'ıyla çözülür (SPEC-003 getAlternates çıktısı).
- */
 export function localeUrlsFromSlugs(
-  pathname: '/services/[slug]' | '/blog/[slug]' | '/team/[slug]' | '/legal/[slug]',
+  pathname: DetailPathname,
   slugs: Record<Locale, string>,
 ): Record<Locale, string> {
-  const entries = routing.locales.map((locale) => [
-    locale,
-    absoluteUrl(
-      getPathname({
-        locale,
-        // next-intl'in tipli href'i dinamik pathname'lerde params bekler
-        href: { pathname, params: { slug: slugs[locale] } } as Href,
-      }),
-    ),
-  ]);
-
-  return Object.fromEntries(entries) as Record<Locale, string>;
+  return { tr: absoluteUrl(`${DETAIL_BASES[pathname]}/${slugs.tr}`) };
 }
 
-export function buildAlternates(
-  locale: Locale,
-  urls: Record<Locale, string>,
-  noindex = false,
-): Metadata['alternates'] {
-  const canonical = urls[locale];
-
-  // noindex sayfalarda hreflang üretilmez.
-  if (noindex) return { canonical };
-
-  return {
-    canonical,
-    languages: {
-      ...urls,
-      'x-default': urls[X_DEFAULT_LOCALE],
-    },
-  };
+export function buildAlternates(urls: Record<Locale, string>): Metadata['alternates'] {
+  return { canonical: urls.tr };
 }

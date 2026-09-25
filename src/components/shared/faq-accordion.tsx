@@ -2,6 +2,7 @@
 
 import * as Accordion from '@radix-ui/react-accordion';
 import { Minus, Plus } from 'lucide-react';
+import { RichText } from '@/components/RichText';
 import type { FaqItem } from '@/lib/content/types';
 
 /**
@@ -34,8 +35,11 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               </span>
             </Accordion.Trigger>
           </Accordion.Header>
-          <Accordion.Content className="text-text-muted pb-4 ps-9 pe-8 text-sm leading-relaxed">
-            {item.answer}
+          <Accordion.Content className="pb-4 ps-9 pe-8">
+            <RichText
+              html={item.answer}
+              className="text-text-muted text-sm leading-relaxed"
+            />
           </Accordion.Content>
         </Accordion.Item>
       ))}

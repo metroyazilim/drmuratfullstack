@@ -1,4 +1,4 @@
-import type { Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/site-routes';
 import type { ReactNode } from 'react';
 
 export type ContentType = 'services' | 'blog' | 'team' | 'pages' | 'legal';
@@ -15,20 +15,35 @@ export interface SeoFrontmatter {
   noindex?: boolean;
 }
 
-export interface FeatureItem {
-  title: string;
-  description: string;
+export interface ServiceKpi {
+  label: string;
+  value: string;
+  detail: string;
 }
+
+export type ServiceBlock =
+  | { type: 'text'; title: string; body: string }
+  | { type: 'steps'; title: string; items: { title: string; description: string }[] }
+  | { type: 'faq'; title: string; items: { question: string; answer: string }[] }
+  | { type: 'callout'; title: string; body: string; tone: 'info' | 'warning' };
 
 export interface ServiceFrontmatter extends SeoFrontmatter {
   shortDescription: string;
   cardImage: string;
   cardImageAlt: string;
-  cardTags: string[];
   order: number;
+  kpis: ServiceKpi[];
+  blocks: ServiceBlock[];
   relatedPosts: string[];
-  features: FeatureItem[];
 }
+
+export type PostBlock =
+  | { type: 'text'; title: string; body: string }
+  | { type: 'richText'; title?: string; html: string }
+  | { type: 'kpis'; title?: string; items: ServiceKpi[] }
+  | { type: 'steps'; title: string; items: { title: string; description: string }[] }
+  | { type: 'faq'; title: string; items: { question: string; answer: string }[] }
+  | { type: 'callout'; title: string; body: string; tone: 'info' | 'warning' };
 
 export interface PostFrontmatter extends SeoFrontmatter {
   publishedAt: string;
@@ -36,6 +51,7 @@ export interface PostFrontmatter extends SeoFrontmatter {
   category: string;
   relatedServices: string[];
   author: string;
+  blocks: PostBlock[];
 }
 
 export interface TeamFrontmatter extends SeoFrontmatter {
@@ -69,7 +85,6 @@ export interface PageFrontmatter extends SeoFrontmatter {
 export interface LegalFrontmatter extends SeoFrontmatter {
   noindex?: boolean;
 }
-
 export interface ServiceSummary {
   id: string;
   locale: Locale;
@@ -79,13 +94,11 @@ export interface ServiceSummary {
   slug: string;
   cardImage: string;
   cardImageAlt: string;
-  cardTags: string[];
   order: number;
 }
 
 export interface Service extends ServiceSummary {
   frontmatter: ServiceFrontmatter;
-  content: ReactNode;
 }
 
 export interface PostSummary {
@@ -104,7 +117,6 @@ export interface PostSummary {
 
 export interface Post extends PostSummary {
   frontmatter: PostFrontmatter;
-  content: ReactNode;
 }
 
 export interface TeamSummary {

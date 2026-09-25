@@ -1,19 +1,21 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { ChevronDown } from 'lucide-react';
 import { getClinic } from '@/lib/content';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import { isNavGroup, mainNav } from '@/lib/navigation';
 import { Brand } from './brand';
 import { NavLink } from './nav-link';
-import { LanguageSwitcher } from './language-switcher';
+import { GoogleTranslate } from './google-translate';
 import { MobileMenu } from './mobile-menu';
 
 export async function Header() {
-  const t = await getTranslations('nav');
-  const tHeader = await getTranslations('header');
-  const clinic = getClinic();
+  const [t, tHeader, clinic] = await Promise.all([
+    getTranslations('nav'),
+    getTranslations('header'),
+    getClinic(),
+  ]);
 
   return (
     <header className="border-border-default bg-bg-base sticky top-0 z-40 border-b">
@@ -64,10 +66,8 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {/* Mobilde de navbar'da durur; `collapseLabel` ile dar ekranda
-                yalnızca globe ikonu kalır, satır kalabalıklaşmaz. */}
-            <LanguageSwitcher collapseLabel />
-            <Link href="/appointment" className="hidden sm:block">
+            <GoogleTranslate id="google-translate-header" className="shrink-0" />
+            <Link href="/randevu-al" className="hidden sm:block">
               <Button variant="primary" size="sm">
                 {tHeader('appointmentCta')}
               </Button>

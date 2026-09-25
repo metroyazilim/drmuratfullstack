@@ -1,9 +1,10 @@
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
 import { InstagramIcon } from '@/components/shared/instagram-icon';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
+import { RichText } from '@/components/RichText';
 import type { Home } from '@/lib/content/types';
 
 type HeroProps = {
@@ -53,9 +54,10 @@ export async function Hero({ hero, instagram }: HeroProps) {
             {/* Mobilde açıklama gizli: 400px'lik görsel alanına başlık,
                 açıklama ve iki buton birlikte sığmıyor ve metin taşıyordu.
                 Aynı metin hemen altındaki "Hakkımızda" bölümünde zaten var. */}
-            <p className="text-text-inverse/75 mt-4 hidden max-w-lg text-sm leading-relaxed sm:block md:text-base">
-              {hero.description}
-            </p>
+            <RichText
+              html={hero.description}
+              className="text-text-inverse/75 mt-4 hidden max-w-lg text-sm leading-relaxed sm:block md:text-base"
+            />
 
             <div className="mt-5 flex flex-wrap gap-3 md:mt-7">
               <Link href="/appointment">

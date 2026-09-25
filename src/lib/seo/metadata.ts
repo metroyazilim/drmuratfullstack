@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import type { Locale } from '@/lib/i18n';
 import {
   DEFAULT_OG_IMAGE,
   OG_LOCALE,
@@ -10,11 +9,10 @@ import {
 import { buildAlternates } from './alternates';
 
 export type BuildMetadataInput = {
-  locale: Locale;
   title: string;
   description: string;
-  /** Dört dilin mutlak URL'i — localeUrls / localeUrlsFromSlugs çıktısı. */
-  urls: Record<Locale, string>;
+  /** Tek kanonik mutlak URL. */
+  urls: Record<'tr', string>;
   ogImage?: string;
   ogImageAlt?: string;
   type?: 'website' | 'article';
@@ -30,7 +28,6 @@ export type BuildMetadataInput = {
  * Sayfa dosyalarında elle Metadata nesnesi kurulmaz (architecture.md → Invariant 3).
  */
 export function buildMetadata({
-  locale,
   title,
   description,
   urls,
@@ -42,7 +39,7 @@ export function buildMetadata({
   noindex = false,
   isHome = false,
 }: BuildMetadataInput): Metadata {
-  const siteName = SITE_NAME[locale];
+  const siteName = SITE_NAME;
   const fullTitle = isHome ? title : `${title} | ${siteName}`;
   const image = absoluteUrl(ogImage ?? DEFAULT_OG_IMAGE);
 
@@ -52,7 +49,7 @@ export function buildMetadata({
     // eklemesini engeller. Marka son ekinin tek sahibi burasıdır.
     title: { absolute: fullTitle },
     description,
-    alternates: buildAlternates(locale, urls, noindex),
+    alternates: buildAlternates(urls),
     robots: noindex
       ? { index: false, follow: true }
       : { index: true, follow: true },
@@ -61,11 +58,8 @@ export function buildMetadata({
       siteName,
       title: fullTitle,
       description,
-      url: urls[locale],
-      locale: OG_LOCALE[locale],
-      alternateLocale: Object.entries(OG_LOCALE)
-        .filter(([key]) => key !== locale)
-        .map(([, value]) => value),
+      url: urls.tr,
+      locale: OG_LOCALE,
       images: [
         {
           url: image,

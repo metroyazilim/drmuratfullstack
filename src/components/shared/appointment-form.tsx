@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { useTranslations } from '@/lib/strings';
+import { Field, Input, Textarea } from '@/components/ui/field';
+import { SelectField } from '@/components/ui/select-field';
 import { Button } from '@/components/ui/button';
 import { submitAppointment } from '@/actions/submit-forms';
 import {
@@ -35,12 +36,14 @@ export function AppointmentForm({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<AppointmentFormValues, unknown, AppointmentClientInput>({
     resolver: zodResolver(appointmentClientSchema),
     defaultValues: { website: '' },
   });
 
+  const [serviceId, setServiceId] = useState('');
   // Form açılış anı; sunucu bunu bot tespitinde kullanır.
   // useState'in lazy initializer'ı, Date.now()'u render'dan uzak tutar.
   const [startedAt] = useState(() => Date.now());
@@ -98,17 +101,22 @@ export function AppointmentForm({
           çevrildi ve hizmetler içerik katmanından geliyor. */}
       <Field id="ap-service" label={t('labels.service')} required error={message(errors.serviceId?.message)}>
         {(p) => (
-          <Select {...p} {...register('serviceId')} defaultValue="">
-            <option value="" disabled>
-              {t('selectService')}
-            </option>
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.title}
-              </option>
-            ))}
-            <option value="other">{t('otherService')}</option>
-          </Select>
+          <>
+            <SelectField
+              value={serviceId}
+              onValueChange={(nextServiceId) => {
+                setServiceId(nextServiceId);
+                setValue('serviceId', nextServiceId, { shouldValidate: true });
+              }}
+              placeholder={t('selectService')}
+              options={[
+                ...services.map((service) => ({ value: service.id, label: service.title })),
+                { value: 'other', label: t('otherService') },
+              ]}
+              {...p}
+            />
+            <input type="hidden" {...register('serviceId')} />
+          </>
         )}
       </Field>
 

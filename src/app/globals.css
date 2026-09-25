@@ -39,6 +39,30 @@
   --overlay-image: rgba(20, 22, 21, 0.55);
 }
 
+/* Google Website Translator üst banner'ı sayfa düzenini aşağı itmesin. */
+body > .skiptranslate,
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.goog-te-gadget {
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.5rem;
+}
+
 /* Sticky header hedef bağlantıların üstünü kapatmasın. */
 :target {
   scroll-margin-top: 6rem;

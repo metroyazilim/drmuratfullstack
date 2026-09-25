@@ -1,0 +1,279 @@
+// Dr. Murat Irmak Kliniği — yönetim paneli veri modeli.
+//
+// İçerik modeli `content/` dizinini birebir yansıtır: bir varlık (ContentEntry)
+// ve o varlığın dört dildeki sürümü (ContentLocale). Dosya düzeninden sapmamak
+// bilinçli bir karardır; içe aktarma ve geri yazma iki yönde de kayıpsız olur.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentType {
+  SERVICE
+  POST
+  TEAM
+  PAGE
+  LEGAL
+}
+
+enum SubmissionKind {
+  APPOINTMENT
+  CONTACT
+}
+
+enum SubmissionStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+enum MediaKind {
+  IMAGE
+  DOCUMENT
+}
+
+model AdminUser {
+  id           String               @id @default(cuid())
+  email        String               @unique
+  passwordHash String
+  name         String
+  role         AdminRole            @default(EDITOR)
+  isActive     Boolean              @default(true)
+  /// Artırıldığında o kullanıcının tüm oturumları geçersizleşir.
+  tokenVersion Int                  @default(0)
+  lastLoginAt  DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  auditLogs    AuditLog[]
+  resetTokens  PasswordResetToken[]
+  uploads      MediaAsset[]
+
+  @@index([role])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String     @id @default(cuid())
+  actorId    String?
+  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorEmail String
+  action     String
+  entity     String
+  entityId   String?
+  summary    String?
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+/// Hizmet, blog yazısı, ekip üyesi, kurumsal sayfa ve yasal metin.
+/// `key` dosya sistemindeki klasör adıdır (`content/services/mezoterapi`).
+model ContentEntry {
+  id          String          @id @default(cuid())
+  type        ContentType
+  key         String
+  status      ContentStatus   @default(DRAFT)
+  order       Int             @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  locales     ContentLocale[]
+
+  @@unique([type, key])
+  @@index([type, status])
+}
+
+/// Bir varlığın tek bir dildeki sürümü. `type` denormalize edilmiştir:
+/// slug benzersizliği (tip + dil + slug) veritabanı seviyesinde zorlanabilsin diye.
+model ContentLocale {
+  id                String       @id @default(cuid())
+  entryId           String
+  entry             ContentEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  type              ContentType
+  locale            String
+  slug              String
+  title             String
+  description       String
+  primaryKeyword    String
+  secondaryKeywords String[]
+  ogImage           String
+  heroImage         String
+  heroImageAlt      String
+  noindex           Boolean      @default(false)
+  /// MDX gövdesi — frontmatter hariç.
+  body              String
+  /// Tipe özel alanlar: features, cardTags, duties, approach, timeline, publishedAt…
+  data              Json         @default("{}")
+  updatedAt         DateTime     @updatedAt
+
+  @@unique([entryId, locale])
+  @@unique([type, locale, slug])
+  @@index([type, locale])
+}
+
+model FaqEntry {
+  id        String        @id @default(cuid())
+  key       String        @unique
+  order     Int           @default(0)
+  status    ContentStatus @default(PUBLISHED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  locales   FaqLocale[]
+}
+
+model FaqLocale {
+  id       String   @id @default(cuid())
+  entryId  String
+  entry    FaqEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  locale   String
+  question String
+  answer   String
+  category String?
+
+  @@unique([entryId, locale])
+}
+
+model GalleryImage {
+  id        String        @id @default(cuid())
+  path      String        @unique
+  order     Int           @default(0)
+  status    ContentStatus @default(PUBLISHED)
+  createdAt DateTime      @default(now())
+  alts      GalleryAlt[]
+}
+
+model GalleryAlt {
+  id      String       @id @default(cuid())
+  imageId String
+  image   GalleryImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  locale  String
+  alt     String
+
+  @@unique([imageId, locale])
+}
+
+/// `content/home/{locale}.json` karşılığı.
+model HomeContent {
+  id        String   @id @default(cuid())
+  locale    String   @unique
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+/// `content/listing/{key}/{locale}.json` karşılığı.
+model ListingContent {
+  id        String   @id @default(cuid())
+  key       String
+  locale    String
+  data      Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, locale])
+}
+
+/// Eski site adreslerinin kalıcı yönlendirmeleri.
+model Redirect {
+  id          String   @id @default(cuid())
+  source      String   @unique
+  destination String
+  permanent   Boolean  @default(true)
+  isActive    Boolean  @default(true)
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Randevu ve iletişim talepleri. KVKK gereği `retentionUntil` dolduğunda silinir.
+model FormSubmission {
+  id             String           @id @default(cuid())
+  kind           SubmissionKind
+  status         SubmissionStatus @default(NEW)
+  locale         String
+  fullName       String
+  email          String
+  phone          String
+  preferredDate  String?
+  serviceKey     String?
+  message        String?
+  mailDelivered  Boolean          @default(false)
+  readAt         DateTime?
+  retentionUntil DateTime
+  createdAt      DateTime         @default(now())
+
+  @@index([kind, status])
+  @@index([createdAt])
+  @@index([retentionUntil])
+}
+
+model MediaAsset {
+  id           String     @id @default(cuid())
+  filename     String
+  objectKey    String     @unique
+  url          String
+  mimeType     String
+  extension    String
+  kind         MediaKind  @default(IMAGE)
+  byteSize     Int
+  /// SHA-256; aynı dosyanın tekrar yüklendiğini tespit etmek için.
+  checksum     String
+  width        Int?
+  height       Int?
+  altText      String?
+  caption      String?
+  archived     Boolean    @default(false)
+  uploadedById String?
+  uploadedBy   AdminUser? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([archived, createdAt])
+  @@index([checksum])
+}
+
+/// Klinik künyesi (`content/clinic.json`), SMTP ve panel tercihleri.
+model SiteSettings {
+  id                       String   @id @default(cuid())
+  singleton                Boolean  @unique @default(true)
+  /// clinic.json şemasının tamamı; `clinicSchema` ile doğrulanır.
+  clinic                   Json?
+  smtpHost                 String?
+  smtpPort                 Int?
+  smtpSecure               Boolean?
+  smtpUser                 String?
+  /// AES-256-GCM ile şifrelenmiş; tarayıcıya asla dönmez.
+  smtpPasswordEnc          String?
+  smtpFrom                 String?
+  mailTo                   String?
+  submissionRetentionDays  Int      @default(180)
+  updatedAt                DateTime @updatedAt
+}

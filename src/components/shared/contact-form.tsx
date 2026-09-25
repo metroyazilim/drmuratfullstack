@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/strings';
 import { Field, Input, Textarea } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { submitContact } from '@/actions/submit-forms';

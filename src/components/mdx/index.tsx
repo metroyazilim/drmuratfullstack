@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import { Callout } from './Callout';
 import { Figure } from './Figure';
 import { Steps, Step } from './Steps';

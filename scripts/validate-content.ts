@@ -75,7 +75,7 @@ function checkTitleBranding(file: string, title: unknown) {
   }
 }
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
-const LOCALES = ['tr', 'en', 'ar', 'ru'] as const;
+const LOCALES = ['tr'] as const;
 type Locale = (typeof LOCALES)[number];
 
 interface ValidationError {
@@ -213,6 +213,8 @@ function checkAssetExists(
   fieldName?: string,
 ) {
   if (!assetPathStr) return;
+  // Medya kitaplığından gelen görseller R2'de durur; diskte aranmaz.
+  if (/^https?:\/\//.test(assetPathStr)) return;
   const normalized = assetPathStr.replace(/^\//, '');
   const fullPath = path.join(PUBLIC_DIR, normalized);
   if (!fs.existsSync(fullPath)) {
@@ -311,25 +313,17 @@ function validateEntities() {
     }
   }
 
-  // Keywords and Slugs tracking per locale
+  // Turkish is the only source language; validate keyword and slug uniqueness
+  // within the canonical public route set.
   const primaryKeywordsPerLocale: Record<Locale, Map<string, string>> = {
     tr: new Map(),
-    en: new Map(),
-    ar: new Map(),
-    ru: new Map(),
   };
 
-  const slugsPerTypeAndLocale: Record<
-    string,
-    Record<Locale, Map<string, string>>
-  > = {};
+  const slugsPerTypeAndLocale: Record<string, Record<Locale, Map<string, string>>> = {};
 
   for (const { type, schema } of contentTypes) {
     slugsPerTypeAndLocale[type] = {
       tr: new Map(),
-      en: new Map(),
-      ar: new Map(),
-      ru: new Map(),
     };
 
     const typeDir = path.join(CONTENT_DIR, type);
@@ -343,7 +337,7 @@ function validateEntities() {
     for (const entityId of entityDirs) {
       const entityDirPath = path.join(typeDir, entityId);
 
-      // Check 1: Missing translations (Must have all 4 language files)
+      // Check 1: Canonical Turkish source file
       for (const locale of LOCALES) {
         const filePath = path.join(entityDirPath, `${locale}.mdx`);
         const relativeFilePath = `content/${type}/${entityId}/${locale}.mdx`;
@@ -351,7 +345,7 @@ function validateEntities() {
         if (!fs.existsSync(filePath)) {
           addError(
             relativeFilePath,
-            `Eksik çeviri: '${entityId}' varlığının ${locale}.mdx dosyası bulunamadı.`,
+            `Eksik Türkçe içerik: '${entityId}' varlığının ${locale}.mdx dosyası bulunamadı.`,
           );
           continue;
         }

@@ -1,34 +1,36 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { getAlternates, getClinic, listEntityIds } from '@/lib/content';
 import { Container } from '@/components/ui/container';
-import { Link } from '@/lib/i18n';
+import { Link, LOCALE } from '@/lib/site-routes';
 import { footerNav } from '@/lib/navigation';
 import { DirectionsButton } from './directions-button';
 import { mapsUrl } from '@/lib/utils/maps';
 import { Brand } from './brand';
-import type { Locale } from '@/lib/i18n';
 
-export async function Footer({ locale }: { locale: Locale }) {
-  const t = await getTranslations('nav');
-  const tFooter = await getTranslations('footer');
-  const tLegal = await getTranslations('legal');
-  const tA11y = await getTranslations('a11y');
-  const tMap = await getTranslations('map');
-  const clinic = getClinic();
+export async function Footer() {
+  const [t, tFooter, tLegal, tA11y, tMap, clinic, legalIds] = await Promise.all([
+    getTranslations('nav'),
+    getTranslations('footer'),
+    getTranslations('legal'),
+    getTranslations('a11y'),
+    getTranslations('map'),
+    getClinic(),
+    listEntityIds('legal'),
+  ]);
 
   // Harita, clinic.json'daki `address.geo` ile aynı noktayı gösterir;
   // LocalBusiness şeması ve harita tek kaynaktan beslenir.
   const geo = clinic.address.geo;
 
   // Yasal bağlantılar İÇERİKTEN türetilir; sabit slug listesi tutulmaz.
-  // Slug dile göre değişiyor (tr: kvkk, en: privacy-policy) ve henüz
-  // yazılmamış bir yasal sayfaya link vermek 404 üretirdi.
-  const legalPages = listEntityIds('legal')
-    .map((id) => ({ id, slugs: getAlternates('legal', id) }))
-    .filter((entry): entry is { id: string; slugs: Record<Locale, string> } =>
-      Boolean(entry.slugs),
-    );
+  const legalPages = await Promise.all(
+    legalIds.map(async (id) => ({
+      id,
+      slugs: await getAlternates('legal', id),
+    })),
+  );
+
 
   return (
     <footer className="bg-bg-inverse text-text-inverse">
@@ -152,10 +154,7 @@ export async function Footer({ locale }: { locale: Locale }) {
               {legalPages.map((page) => (
                 <li key={page.id}>
                   <Link
-                    href={{
-                      pathname: '/legal/[slug]',
-                      params: { slug: page.slugs[locale] },
-                    }}
+                    href={`/yasal/${page.slugs.tr}`}
                     className="text-text-inverse/40 hover:text-accent-primary text-xs transition-colors"
                   >
                     {tLegal(page.id)}
@@ -175,7 +174,7 @@ export async function Footer({ locale }: { locale: Locale }) {
         <div className="border-border-inverse relative border-t">
           <iframe
             title={tMap('embedTitle')}
-            src={`https://maps.google.com/maps?q=${geo.latitude},${geo.longitude}&z=17&hl=${locale}&output=embed`}
+            src={`https://maps.google.com/maps?q=${geo.latitude},${geo.longitude}&z=17&hl=${LOCALE}&output=embed`}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="block h-72 w-full border-0 md:h-96"

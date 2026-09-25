@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 
 /** Klavye kullanıcıları için: odaklanınca görünür, ana içeriğe atlar. */
 export async function SkipLink() {

@@ -12,14 +12,14 @@ import { SITE_NAME } from '@/lib/seo/config';
  * `standalone` verirsek Android "ana ekrana ekle" akışında adres çubuğu
  * kaybolur ve kullanıcı telefon/WhatsApp linklerinden geri dönemez.
  */
-export default function manifest(): MetadataRoute.Manifest {
-  const clinic = getClinic();
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const clinic = await getClinic();
 
   return {
-    name: SITE_NAME.tr,
+    name: SITE_NAME,
     short_name: 'Dr. Murat Irmak',
     description: clinic.description,
-    start_url: '/tr',
+    start_url: '/',
     scope: '/',
     display: 'browser',
     lang: 'tr',

@@ -3,8 +3,8 @@ import { getClinic } from '@/lib/content';
 import { Container } from '@/components/ui/container';
 
 /** Koyu üst şerit — md altında gizlidir (tasarım gereği). */
-export function TopBar() {
-  const clinic = getClinic();
+export async function TopBar() {
+  const clinic = await getClinic();
 
   return (
     <div className="bg-bg-inverse text-text-inverse hidden md:block">

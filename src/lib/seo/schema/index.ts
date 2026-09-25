@@ -12,8 +12,6 @@ import type {
   WebSite,
   WithContext,
 } from 'schema-dts';
-import { getClinic } from '@/lib/content';
-import { getPathname } from '@/i18n/navigation';
 import type {
   Clinic,
   FaqItem,
@@ -24,7 +22,7 @@ import type {
   TeamMember,
   TeamSummary,
 } from '@/lib/content/types';
-import { routing, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/site-routes';
 import { SITE_NAME, absoluteUrl } from '../config';
 
 /** Klinik tekil bir varlıktır; her şemada yeniden tanımlanmaz, @id ile işaret edilir. */
@@ -46,28 +44,14 @@ const CLINIC_IMAGES = [
   absoluteUrl('/images/gallery/uygulama-odasi.webp'),
 ];
 
-const LANGUAGE_NAMES: Record<Locale, string> = {
-  tr: 'Turkish',
-  en: 'English',
-  ar: 'Arabic',
-  ru: 'Russian',
-};
-
-const SUPPORTED_LANGUAGES = routing.locales.map(
-  (locale) => LANGUAGE_NAMES[locale],
-);
+const SUPPORTED_LANGUAGES = ['Turkish'];
 
 /**
  * Hizmet detay URL'i. Yol dile göre çevrildiği için (`/hizmetler`,
  * `/uslugi`, `/الخدمات`) elle birleştirilmez; routing tablosundan çözülür.
  */
-function serviceUrl(locale: Locale, slug: string): string {
-  return absoluteUrl(
-    getPathname({
-      locale,
-      href: { pathname: '/services/[slug]', params: { slug } },
-    }),
-  );
+function serviceUrl(_locale: Locale, slug: string): string {
+  return absoluteUrl(`/hizmetler/${slug}`);
 }
 
 function postalAddress(clinic: Clinic) {
@@ -89,13 +73,13 @@ function postalAddress(clinic: Clinic) {
 export function clinicSchema(
   locale: Locale,
   description: string,
+  clinic: Clinic,
   /**
    * Klinikte sunulan hizmetler. Verildiğinde `availableService` üretilir —
    * yanıt motorları "bu klinik ne yapıyor?" sorusunu şemadan cevaplayabilir.
    */
   services: ServiceSummary[] = [],
 ): WithContext<MedicalClinic> {
-  const clinic = getClinic();
   const sameAs = Object.values(clinic.social).filter(Boolean) as string[];
   const geo = clinic.address.geo;
 
@@ -103,10 +87,10 @@ export function clinicSchema(
     '@context': 'https://schema.org',
     '@type': 'MedicalClinic',
     '@id': CLINIC_ID,
-    name: SITE_NAME[locale],
+    name: SITE_NAME,
     legalName: clinic.legalName,
     description,
-    url: absoluteUrl(`/${locale}`),
+    url: absoluteUrl('/'),
     telephone: clinic.contact.phone,
     email: clinic.contact.email,
     address: postalAddress(clinic),
@@ -185,12 +169,11 @@ export function clinicSchema(
  * kimliği üretmektense şemayı hiç basmamak doğru.
  */
 export function physicianSchema(
-  locale: Locale,
+  _locale: Locale,
   member: TeamSummary | undefined,
+  clinic: Clinic,
 ): WithContext<Person> | null {
   if (!member) return null;
-
-  const clinic = getClinic();
 
   return {
     '@context': 'https://schema.org',
@@ -201,12 +184,7 @@ export function physicianSchema(
     '@id': PHYSICIAN_ID,
     name: member.name,
     jobTitle: member.role,
-    url: absoluteUrl(
-      getPathname({
-        locale,
-        href: { pathname: '/team/[slug]', params: { slug: member.slug } },
-      }),
-    ),
+    url: absoluteUrl(`/ekibimiz/${member.slug}`),
     ...(member.photo ? { image: absoluteUrl(member.photo) } : {}),
     telephone: clinic.contact.phone,
     email: clinic.contact.email,
@@ -242,7 +220,7 @@ export function websiteSchema(locale: Locale, url: string): WithContext<WebSite>
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${url}#website`,
-    name: SITE_NAME[locale],
+    name: SITE_NAME,
     url,
     inLanguage: locale,
     publisher: { '@id': CLINIC_ID },
@@ -315,8 +293,9 @@ export function personSchema(
   member: TeamMember,
   locale: Locale,
   url: string,
+  clinic: Clinic,
 ): WithContext<Person> {
-  const isLeadPhysician = member.frontmatter.name === getClinic().doctor.name;
+  const isLeadPhysician = member.frontmatter.name === clinic.doctor.name;
 
   return {
     '@context': 'https://schema.org',

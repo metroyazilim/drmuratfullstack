@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react';
+
 type StepCardProps = {
   index: number;
   title: string;
-  description: string;
+  description: ReactNode;
 };
 
 /** Numara index'ten üretilir; içerikte tekrar yazılmaz. */
@@ -15,9 +17,9 @@ export function StepCard({ index, title, description }: StepCardProps) {
         {String(index + 1).padStart(2, '0')}
       </span>
       <h3 className="text-text-primary mt-4 text-base font-semibold">{title}</h3>
-      <p className="text-text-muted mt-2 text-sm leading-relaxed">
+      <div className="text-text-muted mt-2 text-sm leading-relaxed">
         {description}
-      </p>
+      </div>
     </div>
   );
 }

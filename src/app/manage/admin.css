@@ -1,0 +1,14 @@
+/* Yalnızca /manage ağacında kullanılan davranışsal kabuk.
+   Renk, tipografi ve yarıçap token'ları globals.css kaynağından gelir. */
+.admin-root {
+  min-height: 100svh;
+  color-scheme: light;
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+.admin-root button,
+.admin-root a {
+  -webkit-tap-highlight-color: transparent;
+}

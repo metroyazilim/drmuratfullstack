@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 
 /**
  * Her hizmet ve blog detay sayfasında ZORUNLU.

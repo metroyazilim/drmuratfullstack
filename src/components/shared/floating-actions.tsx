@@ -1,7 +1,7 @@
 'use client';
 
 import { Phone } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/strings';
 import { WhatsAppIcon } from './whatsapp-icon';
 
 type FloatingActionsProps = {

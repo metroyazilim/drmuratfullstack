@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+/**
+ * Görsel referansı: repodaki `/images/...` yolu ya da medya kitaplığından
+ * gelen tam URL. Panel eklenmeden önce yalnızca ilki mümkündü; R2'ye yüklenen
+ * görseller mutlak adresle geldiği için ikinci biçim de kabul edilir.
+ */
+function imageRef(prefix: string, label: string) {
+  return z
+    .string()
+    .refine(
+      (value) => value.startsWith(prefix) || /^https?:\/\//.test(value),
+      `${label} '${prefix}' ile başlamalı veya tam bir URL olmalıdır`,
+    );
+}
+
 export const seoFrontmatterSchema = z.object({
   title: z
     .string()
@@ -17,42 +31,93 @@ export const seoFrontmatterSchema = z.object({
     .array(z.string().min(2))
     .min(1, 'En az 1 ikincil anahtar kelime gereklidir')
     .max(4, 'En fazla 4 ikincil anahtar kelime eklenebilir'),
-  ogImage: z
-    .string()
-    .startsWith('/images/og/', "ogImage '/images/og/' ile başlamalıdır"),
-  heroImage: z
-    .string()
-    .startsWith('/images/', "heroImage '/images/' ile başlamalıdır"),
+  ogImage: imageRef('/images/og/', 'ogImage'),
+  heroImage: imageRef('/images/', 'heroImage'),
   heroImageAlt: z.string().min(10, 'heroImageAlt en az 10 karakter olmalıdır'),
   noindex: z.boolean().default(false),
 });
+
+export const serviceKpiSchema = z.object({
+  label: z.string().min(2).max(60),
+  value: z.string().min(2).max(80),
+  detail: z.string().min(2).max(180),
+});
+
+export const serviceBlockSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('text'),
+    title: z.string().min(3).max(120),
+    body: z.string().min(30).max(2000),
+  }),
+  z.object({
+    type: z.literal('steps'),
+    title: z.string().min(3).max(120),
+    items: z
+      .array(z.object({ title: z.string().min(2).max(100), description: z.string().min(10).max(500) }))
+      .min(2)
+      .max(5),
+  }),
+  z.object({
+    type: z.literal('faq'),
+    title: z.string().min(3).max(120),
+    items: z
+      .array(z.object({ question: z.string().min(5).max(160), answer: z.string().min(20).max(1000) }))
+      .min(2)
+      .max(6),
+  }),
+  z.object({
+    type: z.literal('callout'),
+    title: z.string().min(3).max(120),
+    body: z.string().min(20).max(1000),
+    tone: z.enum(['info', 'warning']).default('info'),
+  }),
+]);
 
 export const serviceFrontmatterSchema = seoFrontmatterSchema.extend({
   shortDescription: z
     .string()
     .min(20, 'Kısa açıklama en az 20 karakter olmalıdır'),
-  cardImage: z
-    .string()
-    .startsWith('/images/', "cardImage '/images/' ile başlamalıdır"),
+  cardImage: imageRef('/images/', 'cardImage'),
   cardImageAlt: z.string().min(10, 'cardImageAlt en az 10 karakter olmalıdır'),
-  // Kart üzerindeki kısa etiket satırı (tasarım: "Dinamik çizgiler •
-  // hacim desteği • yüz oranları"). Cümle değil; ayırıcı nokta CSS ile
-  // üretilir, içeriğe yazılmaz.
-  cardTags: z
-    .array(z.string().min(2))
-    .min(2, 'cardTags en az 2 etiket içermelidir')
-    .max(3, 'cardTags en fazla 3 etiket içerebilir'),
   order: z.number().int().positive(),
+  kpis: z.array(serviceKpiSchema).min(3).max(4),
+  blocks: z.array(serviceBlockSchema).min(3).max(8),
   relatedPosts: z.array(z.string()).default([]),
-  features: z
-    .array(
-      z.object({
-        title: z.string().min(2),
-        description: z.string().min(10),
-      }),
-    )
-    .default([]),
 });
+
+export const postBlockSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('text'),
+    title: z.string().min(3).max(120),
+    body: z.string().min(10).max(6000),
+  }),
+  z.object({
+    type: z.literal('richText'),
+    title: z.string().min(3).max(120).optional(),
+    html: z.string().min(7).max(15000),
+  }),
+  z.object({
+    type: z.literal('kpis'),
+    title: z.string().min(3).max(120).optional(),
+    items: z.array(serviceKpiSchema).min(2).max(4),
+  }),
+  z.object({
+    type: z.literal('steps'),
+    title: z.string().min(3).max(120),
+    items: z.array(z.object({ title: z.string().min(2).max(100), description: z.string().min(10).max(500) })).min(2).max(6),
+  }),
+  z.object({
+    type: z.literal('faq'),
+    title: z.string().min(3).max(120),
+    items: z.array(z.object({ question: z.string().min(5).max(160), answer: z.string().min(20).max(1000) })).min(2).max(12),
+  }),
+  z.object({
+    type: z.literal('callout'),
+    title: z.string().min(3).max(120),
+    body: z.string().min(20).max(2000),
+    tone: z.enum(['info', 'warning']).default('info'),
+  }),
+]);
 
 export const postFrontmatterSchema = seoFrontmatterSchema.extend({
   publishedAt: z
@@ -65,6 +130,7 @@ export const postFrontmatterSchema = seoFrontmatterSchema.extend({
   category: z.string().min(2),
   relatedServices: z.array(z.string()).default([]),
   author: z.string().default('Dr. Murat Irmak'),
+  blocks: z.array(postBlockSchema).min(1).max(60),
 });
 
 export const teamFrontmatterSchema = seoFrontmatterSchema.extend({
@@ -73,10 +139,7 @@ export const teamFrontmatterSchema = seoFrontmatterSchema.extend({
   // Fotoğraf OPSİYONEL: tasarım, fotoğrafı olmayan üyeler için baş harf
   // monogramı kullanıyor (MK, EB). Fotoğraf sonradan gelirse yalnızca
   // frontmatter'a eklenir, kod değişmez.
-  photo: z
-    .string()
-    .startsWith('/images/', "photo '/images/' ile başlamalıdır")
-    .optional(),
+  photo: imageRef('/images/', 'photo').optional(),
   photoAlt: z.string().min(5).optional(),
   // Detay sayfasındaki üç görev kartı (Randevu / Hazırlık / Takip).
   duties: z
@@ -112,7 +175,7 @@ const featureItemSchema = z.object({
  * yalnızca MDX gövdesi. Blok yoksa bölüm hiç render edilmez.
  */
 export const pageFrontmatterSchema = seoFrontmatterSchema.extend({
-  sidebarImage: z.string().startsWith('/images/').optional(),
+  sidebarImage: imageRef('/images/', 'görsel').optional(),
   sidebarImageAlt: z.string().min(10).optional(),
   approach: z
     .object({
@@ -213,20 +276,20 @@ export const homeSchema = z.object({
   seo: z.object({
     title: z.string().min(3).max(90),
     description: z.string().min(120).max(165),
-    ogImage: z.string().startsWith('/images/'),
+    ogImage: imageRef('/images/', 'görsel'),
   }),
   hero: z.object({
     eyebrow: z.string().min(2),
     title: z.string().min(10),
     description: z.string().min(20),
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
     primaryCta: z.string().min(2),
     secondaryCta: z.string().min(2),
     doctorCard: z.object({
       name: z.string().min(2),
       title: z.string().min(2),
-      photo: z.string().startsWith('/images/'),
+      photo: imageRef('/images/', 'görsel'),
       photoAlt: z.string().min(10),
     }),
   }),
@@ -235,7 +298,7 @@ export const homeSchema = z.object({
     title: z.string().min(10),
     description: z.string().min(20),
     chips: z.array(z.string().min(2)).length(3),
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
     ctaLabel: z.string().min(2),
   }),
@@ -271,7 +334,7 @@ export const homeSchema = z.object({
   faq: z.object({
     eyebrow: z.string().min(2),
     title: z.string().min(10),
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
   }),
   blog: z.object({
@@ -279,7 +342,7 @@ export const homeSchema = z.object({
     title: z.string().min(10),
   }),
   cta: z.object({
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
   }),
 });
@@ -293,11 +356,11 @@ export const listingBaseSchema = z.object({
   seo: z.object({
     title: z.string().min(3).max(90),
     description: z.string().min(120).max(165),
-    ogImage: z.string().startsWith('/images/'),
+    ogImage: imageRef('/images/', 'görsel'),
   }),
   banner: z.object({
     title: z.string().min(3),
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
   }),
   intro: z.object({
@@ -331,7 +394,7 @@ export const teamListingSchema = listingBaseSchema.extend({
 
 export const faqListingSchema = listingBaseSchema.extend({
   intro: listingBaseSchema.shape.intro.extend({
-    image: z.string().startsWith('/images/'),
+    image: imageRef('/images/', 'görsel'),
     imageAlt: z.string().min(10),
   }),
 });
@@ -366,7 +429,7 @@ export const contactListingSchema = listingBaseSchema.extend({
     title: z.string().min(5),
     submitLabel: z.string().min(2),
   }),
-  map: z.object({ label: z.string().min(5), image: z.string().startsWith('/images/') }),
+  map: z.object({ label: z.string().min(5), image: imageRef('/images/', 'görsel') }),
 });
 
 export const listingSchemas = {

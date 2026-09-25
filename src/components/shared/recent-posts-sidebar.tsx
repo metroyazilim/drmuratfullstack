@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/lib/i18n';
+import { getTranslations } from '@/lib/strings';
+import { Link } from '@/lib/site-routes';
 import { cn } from '@/lib/utils/cn';
 import type { PostSummary } from '@/lib/content/types';
 
@@ -34,7 +34,7 @@ export async function RecentPostsSidebar({
               className="border-border-default border-b last:border-b-0"
             >
               <Link
-                href={{ pathname: '/blog/[slug]', params: { slug: post.slug } }}
+                href={`/blog/${post.slug}`}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'block py-2.5 text-sm leading-snug transition-colors',

@@ -4,7 +4,7 @@ import { SectionLabel } from '@/components/ui/section-label';
 import { Button } from '@/components/ui/button';
 import { ServiceCard } from '@/components/shared/service-card';
 import { Reveal } from '@/components/shared/reveal';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import type { Home } from '@/lib/content/types';
 import type { ServiceSummary } from '@/lib/content/types';
 

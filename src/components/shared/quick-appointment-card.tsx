@@ -1,13 +1,15 @@
 import { Mail, Phone } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { getClinic } from '@/lib/content';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 
 /** Detay sayfalarının sidebar'ında; SPEC-008'de blog detayında da kullanılır. */
 export async function QuickAppointmentCard() {
-  const t = await getTranslations('service');
-  const clinic = getClinic();
+  const [t, clinic] = await Promise.all([
+    getTranslations('service'),
+    getClinic(),
+  ]);
 
   return (
     <div className="border-border-default rounded-lg border p-5">

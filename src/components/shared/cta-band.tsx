@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
 import { SectionLabel } from '@/components/ui/section-label';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 
 type CtaBandProps = {
   image: string;

@@ -5,7 +5,7 @@
 | Layer       | Technology                                          | Role                                                                 |
 | ----------- | --------------------------------------------------- | -------------------------------------------------------------------- |
 | Framework   | Next.js 16.3 (App Router) + React 19.2 + TypeScript | Routing, RSC, statik üretim, metadata API, Turbopack                 |
-| Dil / i18n  | next-intl                                           | Locale routing, çeviri sözlükleri, RTL, dile göre slug eşleme        |
+| Dil         | Türkçe sabit public site                           | Tek canonical route seti ve Türkçe içerik                            |
 | UI          | Tailwind CSS v4 + shadcn/ui (Radix)                 | Tasarım token'ları, akordeon/dialog/sheet gibi erişilebilir primitif |
 | İkon        | lucide-react                                        | Stroke tabanlı ikon seti                                             |
 | İçerik      | MDX (`next-mdx-remote/rsc`) + JSON                  | Blog ve uzun metin MDX, yapılandırılmış veri JSON                    |
@@ -24,7 +24,7 @@ için önce CSS/Radix çözümü denenir; ağır JS kütüphanesi son çaredir.
 
 ## System Boundaries
 
-- `app/[locale]/` — Yalnızca routing, layout ve sayfa kompozisyonu.
+- `app/(site)/` — Public routing, layout ve sayfa kompozisyonu.
   Sayfalar veri **çekmez**, `lib/content` adaptöründen **ister** ve
   `components/` içindeki bölümlere dağıtır. Her route segmenti kendi
   `generateMetadata` fonksiyonunu export eder.
@@ -32,32 +32,29 @@ için önce CSS/Radix çözümü denenir; ağır JS kütüphanesi son çaredir.
   Accordion, Input, Badge, Container). İçerik veya iş kuralı bilmez,
   yalnızca prop alır.
 - `components/shared/` — Siteye özel, birden çok sayfada kullanılan
-  bileşenler: Header, Footer, LanguageSwitcher, FloatingActions
-  (WhatsApp + Ara), Breadcrumbs, ServiceCard, PostCard, Lightbox.
+  bileşenler: Header, Footer, FloatingActions, Breadcrumbs, ServiceCard,
+  PostCard ve form kartları.
 - `components/sections/` — Sayfa bölümleri (Hero, ServicesGrid,
   WhyUs, ProcessSteps, FaqAccordion, CtaBand, LatestPosts). Tasarım
   PDF'lerindeki bloklarla birebir eşleşir.
-- `content/` — Tek gerçek kaynak. **Varlık-önce** düzen: her
-  içeriğin klasörü kimliğidir ve dört dil o klasörün içindedir
-  (`content/services/botoks-dolgu/{tr,en,ar,ru}.mdx`). Klasör adı
-  URL değildir; URL'de görünen slug her dilin frontmatter'ından
-  gelir. Kod içermez, sadece içerik ve frontmatter.
+- `content/` — Tek gerçek kaynak. **Varlık-önce** düzen: Türkçe içerik
+  dosyaları tek route setini besler. Kod içermez, sadece içerik ve
+  frontmatter.
 - `lib/content/` — İçerik adaptörü. Dosya sistemini okuyan **tek**
   yer. Dışarıya tip güvenli fonksiyonlar verir (`getService`,
   `listServices`, `getPost`, `listPosts`, `getPage`, `getTeam`,
   `getFaq`, `getGallery`). İleride CMS'e geçilirse yalnızca bu
   klasörün içi değişir.
-- `lib/seo/` — Metadata, hreflang, canonical ve JSON-LD üreticileri.
+- `lib/seo/` — Metadata, canonical ve JSON-LD üreticileri.
   Şema üretimi başka hiçbir yerde elle yazılmaz.
-- `lib/i18n/` — Locale tanımları, `routing.ts`, dile göre slug
-  haritası ve `localizedHref()` yardımcıları.
+- `lib/site-routes.tsx` — Tek dil için canonical route anahtarları ve
+  public `Link` wrapper'ı.
 - `lib/mail/` — Nodemailer transport'u ve mail şablonları. Tek
   `sendAppointmentRequest()` / `sendContactMessage()` girişi.
 - `actions/` — Server Actions. Doğrulama → rate limit → mail →
   sonuç. İş kuralı burada, bileşenlerde değil.
-- `src/messages/` — Arayüz metinleri (buton, etiket, hata mesajı)
-  için dil bazlı JSON. `@/messages/*` bu dizine çözülür; kökte ikinci
-  bir kopya tutulmaz. Sayfa içeriği buraya **konmaz**.
+- `src/messages/tr.json` — Türkçe arayüz metinleri. Sayfa içeriği
+  buraya **konmaz**.
 - `public/images/` — Statik görseller; alt klasörler içerik tipine
   göre (`services/`, `blog/`, `team/`, `gallery/`, `og/`).
 - `app/admin/` — İleride kullanılmak üzere ayrılmış boş yuva. Bu
@@ -66,47 +63,36 @@ için önce CSS/Radix çözümü denenir; ağır JS kütüphanesi son çaredir.
 ## Routing Model
 
 ```
-/                       → /tr'ye redirect (308)
-/[locale]               → Anasayfa
-/[locale]/[page]        → Kurumsal sayfalar (hakkimizda, misyonumuz, ...)
-/[locale]/[services]              → Hizmet listesi
-/[locale]/[services]/[slug]       → Hizmet detayı
-/[locale]/[blog]                  → Blog listesi (?page=, ?kategori=)
-/[locale]/[blog]/[slug]           → Blog detayı
-/[locale]/[team]/[slug]           → Ekip üyesi detayı
-/[locale]/[gallery] | [video]     → Galeriler
-/[locale]/[faq] | [appointment] | [contact]
-/[locale]/[legal]/[slug]          → KVKK, gizlilik, çerez
+/                         → Anasayfa
+/hakkimizda               → Hakkımızda
+/misyonumuz               → Misyonumuz
+/vizyonumuz               → Vizyonumuz
+/kalite-politikamiz      → Kalite politikası
+/hizmetler                → Hizmet listesi
+/hizmetler/[slug]         → Hizmet detayı
+/blog                     → Blog listesi
+/blog/[slug]              → Blog detayı
+/ekibimiz/[slug]          → Ekip üyesi detayı
+/galeri                   → Galeri
+/sss                      → Sık sorulan sorular
+/randevu-al               → Randevu formu
+/iletisim                 → İletişim formu
+/yasal/[slug]             → Yasal metin
 ```
 
-Köşeli parantezli segment adları (`[services]`, `[blog]`) dile göre
-`lib/i18n/slugs.ts` haritasından çözülür; TR'de `hizmetler`, EN'de
-`services`, AR'de `الخدمات`, RU'da `uslugi` olarak render edilir.
-URL'ler kodda string birleştirilerek üretilmez — daima
-`localizedHref(locale, route, params)` kullanılır.
-
-**Arapça slug kararı:** Arapça URL'ler Latin harfe çevrilmez, ana
-dilde yazılır (`/ar/الخدمات`). Tarayıcı bunu percent-encode ederek
-gösterir; paylaşımdaki görüntü kirliliği bilinçli olarak kabul
-edilmiştir çünkü Arapça sorgularda URL–anahtar kelime eşleşmesi
-öncelikli. Aynı kural Rusça için geçerli **değildir**: Rusça
-slug'lar Latin transliterasyonla yazılır (`/ru/uslugi`) — Rusça
-arama sonuçlarında yaygın ve okunabilir olan biçim budur.
-
-Eski site URL'leri `next.config.ts` içindeki `redirects()` ile kalıcı
-(308/301) olarak yeni karşılıklarına taşınır. Bu harita
-`lib/i18n/legacy-redirects.ts` dosyasında tek yerde tutulur.
-
+Public site tek dil ve tek canonical route seti kullanır. Eski locale
+prefix'li adresler `next.config.ts` içindeki kalıcı redirect'lerle
+prefix'siz Türkçe karşılıklarına taşınır.
 ## Rendering Strategy
 
 - Varsayılan: tüm içerik sayfaları **build sırasında statik** üretilir
-  (`generateStaticParams` ile dört dil × tüm slug'lar).
+  (`generateStaticParams` ile Türkçe slug'lar).
 - İçerik dosyadan geldiği için ISR'a bugün ihtiyaç yok; içerik
   değişimi yeni deploy demektir. CMS'e geçildiğinde `revalidate`
   bu katmanda açılır.
-- İstemci bileşeni yalnızca gerçek etkileşim için: mobil menü, dil
-  değiştirici, SSS akordeonu, galeri lightbox, formlar, float
-  butonların görünürlük durumu.
+- İstemci bileşeni yalnızca gerçek etkileşim için: mobil menü,
+  SSS akordeonu, galeri lightbox, formlar ve float butonların
+  görünürlük durumu.
 - Video gömmeleri tıklanana kadar yalnızca kapak görseli yükler
   (facade pattern) — üçüncü parti script LCP'yi bozmaz.
 

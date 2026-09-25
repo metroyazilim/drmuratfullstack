@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/lib/i18n';
+import { getTranslations } from '@/lib/strings';
+import { Link } from '@/lib/site-routes';
 import type { PostSummary } from '@/lib/content/types';
 
 type PostCardProps = {
@@ -33,7 +33,7 @@ export async function PostCard({ post }: PostCardProps) {
         </p>
         <h3 className="text-text-primary mt-1.5 text-base leading-snug font-semibold">
           <Link
-            href={{ pathname: '/blog/[slug]', params: { slug: post.slug } }}
+            href={`/blog/${post.slug}`}
             className="hover:text-accent-primary transition-colors"
           >
             {post.title}
@@ -43,7 +43,7 @@ export async function PostCard({ post }: PostCardProps) {
           {post.description}
         </p>
         <Link
-          href={{ pathname: '/blog/[slug]', params: { slug: post.slug } }}
+          href={`/blog/${post.slug}`}
           className="text-accent-primary hover:text-accent-hover mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold transition-colors"
         >
           {/* Anchor metni başlıktan bağımsız ama anlamlı; "devamı" kullanılmaz. */}

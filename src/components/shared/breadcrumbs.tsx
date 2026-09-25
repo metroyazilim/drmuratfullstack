@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/lib/i18n';
+import { getTranslations } from '@/lib/strings';
+import { Link } from '@/lib/site-routes';
 import { cn } from '@/lib/utils/cn';
 
 export type Crumb = {

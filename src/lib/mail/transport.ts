@@ -1,71 +1,147 @@
-import nodemailer, { type Transporter } from 'nodemailer';
+import 'server-only';
 
-/**
- * SMTP transport'u modül seviyesinde bir kez kurulur.
- *
- * Bilgiler eksikse `null` döner — build kırılmaz, sayfa çalışır, form
- * denendiğinde anlaşılır bir hata verir. Sessizce "gönderildi" demek
- * yasak: kaybolan bir randevu talebi, görünen bir hatadan kötüdür.
- */
-let cached: Transporter | null | undefined;
+import nodemailer, { type Transporter } from 'nodemailer';
+import { prisma } from '@/lib/db';
+import { hasDatabase } from '@/lib/env';
+import { openSecret } from '@/lib/secret-box';
 
 export type MailConfig = {
   from: string;
   to: string;
 };
 
-/**
- * Parola değişkeni iki adla da okunur.
- *
- * Vercel panelinde `SMTP_PASS` yazmak yaygın (çoğu şablon böyle);
- * bu proje `SMTP_PASSWORD` ile başlamıştı. İkisini de kabul etmek,
- * yanlış isim yüzünden formun sessizce ölmesini engeller.
- */
+export type MailSettingsSource = 'database' | 'environment';
+
+type ResolvedMailSettings = {
+  source: MailSettingsSource;
+  host: string;
+  port: number;
+  secure: boolean;
+  user: string;
+  password: string;
+  from: string;
+  to: string | null;
+};
+
+let cachedResolution: Promise<ResolvedMailSettings | null> | undefined;
+let cachedTransport: Promise<Transporter | null> | undefined;
+
 function smtpPassword(): string | undefined {
   return process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
 }
 
-/**
- * @param fallbackTo `MAIL_TO` tanımsızsa kullanılacak klinik adresi.
- *   Çağıran taraf künyeden (clinic.json) verir — randevu talebinin
- *   gideceği yer, unutulmuş bir ortam değişkenine bağlı olamaz.
- *   Mail modülü içerik katmanını kendisi OKUMAZ; bağımlılık tek yönlü kalır.
- */
-export function getMailConfig(fallbackTo?: string): MailConfig | null {
-  // Outlook/Hotmail SMTP, gönderen adresinin kimlik doğrulanan kullanıcıyla
-  // aynı olmasını şart koşar; SMTP_FROM boşsa SMTP_USER'a düşmek doğru
-  // davranış — "eksik" diye formu kapatmaktan iyi.
-  const from = process.env.SMTP_FROM || process.env.SMTP_USER;
-  const to = process.env.MAIL_TO || fallbackTo;
+function environmentSettings(): ResolvedMailSettings | null {
+  const host = process.env.SMTP_HOST?.trim();
+  const rawPort = process.env.SMTP_PORT?.trim();
+  const port = rawPort ? Number(rawPort) : Number.NaN;
+  const user = process.env.SMTP_USER?.trim();
+  const password = smtpPassword();
 
-  if (!from || !to) return null;
-  return { from, to };
-}
-
-export function getTransport(): Transporter | null {
-  if (cached !== undefined) return cached;
-
-  const host = process.env.SMTP_HOST;
-  const port = process.env.SMTP_PORT;
-  const user = process.env.SMTP_USER;
-  const pass = smtpPassword();
-
-  if (!host || !port || !user || !pass) {
-    console.warn(
-      '[mail] SMTP yapılandırması eksik — form gönderimleri mail_failed dönecek. ' +
-        'Gerekli değişkenler: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM',
-    );
-    cached = null;
-    return cached;
+  if (!host || !Number.isInteger(port) || port < 1 || port > 65_535 || !user || !password) {
+    return null;
   }
 
-  cached = nodemailer.createTransport({
+  return {
+    source: 'environment',
     host,
-    port: Number(port),
-    // 465 → örtük TLS; 587/25 → STARTTLS ile yükseltilir.
-    secure: Number(port) === 465,
-    auth: { user, pass },
-  });
+    port,
+    secure: port === 465,
+    user,
+    password,
+    from: process.env.SMTP_FROM?.trim() || user,
+    to: process.env.MAIL_TO?.trim() || null,
+  };
+}
 
-  return cached;
+async function resolveMailSettings(): Promise<ResolvedMailSettings | null> {
+  if (hasDatabase()) {
+    try {
+      const settings = await prisma.siteSettings.findUnique({
+        where: { singleton: true },
+        select: {
+          smtpHost: true,
+          smtpPort: true,
+          smtpSecure: true,
+          smtpUser: true,
+          smtpPasswordEnc: true,
+          smtpFrom: true,
+          mailTo: true,
+        },
+      });
+
+      if (settings?.smtpHost?.trim()) {
+        const password = openSecret(settings.smtpPasswordEnc);
+        const host = settings.smtpHost.trim();
+        const port = settings.smtpPort;
+        const user = settings.smtpUser?.trim();
+        if (!port || !user || !password) return null;
+
+        return {
+          source: 'database',
+          host,
+          port,
+          secure: settings.smtpSecure ?? port === 465,
+          user,
+          password,
+          from: settings.smtpFrom?.trim() || user,
+          to: settings.mailTo?.trim() || null,
+        };
+      }
+    } catch (error) {
+      console.error('[mail] Veritabanı SMTP ayarları okunamadı, ortam ayarları deneniyor.', error);
+    }
+  }
+
+  return environmentSettings();
+}
+
+async function getResolvedMailSettings(): Promise<ResolvedMailSettings | null> {
+  cachedResolution ??= resolveMailSettings();
+  return cachedResolution;
+}
+
+/**
+ * Ayarlar kaydedildiğinde hem çözümlenen bilgileri hem de Nodemailer nesnesini
+ * geçersizleştirir. Bir sonraki gönderim güncel verilerle yeni bağlantı kurar.
+ */
+export function resetTransportCache(): void {
+  cachedResolution = undefined;
+  cachedTransport = undefined;
+}
+
+/** Yönetim ekranında parolayı açığa çıkarmadan etkin kaynağı gösterir. */
+export async function getMailSettingsSource(): Promise<MailSettingsSource | null> {
+  return (await getResolvedMailSettings())?.source ?? null;
+}
+
+/**
+ * `MAIL_TO` bulunmadığında çağıranın verdiği klinik adresine düşer. Mevcut
+ * çağıranların sözleşmesi korunur; yalnızca DB okuması nedeniyle asenkrondur.
+ */
+export async function getMailConfig(fallbackTo?: string): Promise<MailConfig | null> {
+  const settings = await getResolvedMailSettings();
+  if (!settings) return null;
+
+  const to = settings.to || fallbackTo?.trim();
+  if (!settings.from || !to) return null;
+  return { from: settings.from, to };
+}
+
+export async function getTransport(): Promise<Transporter | null> {
+  cachedTransport ??= (async () => {
+    const settings = await getResolvedMailSettings();
+    if (!settings) {
+      console.warn('[mail] SMTP yapılandırması eksik.');
+      return null;
+    }
+
+    return nodemailer.createTransport({
+      host: settings.host,
+      port: settings.port,
+      secure: settings.secure,
+      auth: { user: settings.user, pass: settings.password },
+    });
+  })();
+
+  return cachedTransport;
 }

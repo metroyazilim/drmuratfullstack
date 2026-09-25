@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, usePathname } from '@/lib/i18n';
+import { Link, usePathname } from '@/lib/site-routes';
 import type { NavHref } from '@/lib/navigation';
 import { cn } from '@/lib/utils/cn';
 

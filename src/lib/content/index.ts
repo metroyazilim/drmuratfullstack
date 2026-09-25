@@ -4,7 +4,19 @@ import { cache } from 'react';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/components/mdx';
-import { routing, type Locale } from '@/lib/i18n';
+import { LOCALE, type Locale } from '@/lib/site-routes';
+import {
+  dbGetAlternates,
+  dbGetClinic,
+  dbGetEntry,
+  dbGetFaq,
+  dbGetGallery,
+  dbGetHome,
+  dbGetListing,
+  dbListEntries,
+  dbListSlugs,
+  dbResolveIdBySlug,
+} from './db-source';
 import {
   serviceFrontmatterSchema,
   postFrontmatterSchema,
@@ -21,17 +33,12 @@ import type {
   ContentType,
   Service,
   ServiceSummary,
-  ServiceFrontmatter,
   Post,
   PostSummary,
-  PostFrontmatter,
   TeamMember,
   TeamSummary,
-  TeamFrontmatter,
   Page,
-  PageFrontmatter,
   Legal,
-  LegalFrontmatter,
   FaqItem,
   GalleryItem,
   Clinic,
@@ -49,7 +56,6 @@ export * from './schemas';
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 
-// Helper to read file safely
 function readFileContent(filePath: string): string | null {
   try {
     if (!fs.existsSync(filePath)) return null;
@@ -59,7 +65,6 @@ function readFileContent(filePath: string): string | null {
   }
 }
 
-// 1. Raw Frontmatter & Body Readers (Cached)
 interface RawEntity<T> {
   id: string;
   locale: Locale;
@@ -67,12 +72,12 @@ interface RawEntity<T> {
   rawBody: string;
 }
 
-const getRawEntity = cache(
+const fileGetRawEntity = cache(
   <T>(
     type: ContentType,
     id: string,
     locale: Locale,
-    schema: { parse: (val: unknown) => T },
+    schema: { parse: (value: unknown) => T },
   ): RawEntity<T> | null => {
     const filePath = path.join(CONTENT_DIR, type, id, `${locale}.mdx`);
     const fileContent = readFileContent(filePath);
@@ -80,19 +85,46 @@ const getRawEntity = cache(
 
     try {
       const { data, content: rawBody } = matter(fileContent);
-      const frontmatter = schema.parse(data);
-      return { id, locale, frontmatter, rawBody };
-    } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
+      return { id, locale, frontmatter: schema.parse(data), rawBody };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       throw new Error(
-        `[Content Layer Error] Failed parsing ${type}/${id}/${locale}.mdx: ${errorMsg}`,
+        `[Content Layer Error] Failed parsing ${type}/${id}/${locale}.mdx: ${message}`,
       );
     }
   },
 );
 
-// List directory IDs for a content type
-export const listEntityIds = cache((type: ContentType): string[] => {
+async function getRawEntity<T>(
+  type: ContentType,
+  id: string,
+  locale: Locale,
+  schema: {
+    safeParse: (
+      value: unknown,
+    ) => { success: true; data: T } | { success: false; error: unknown };
+    parse: (value: unknown) => T;
+  },
+): Promise<RawEntity<T> | null> {
+  const databaseEntry = await dbGetEntry(type, id, locale);
+  if (databaseEntry === null) return fileGetRawEntity(type, id, locale, schema);
+  if (!databaseEntry) return null;
+
+  const parsed = schema.safeParse(databaseEntry.frontmatter);
+  if (!parsed.success) {
+    console.error(`[Content DB] Geçersiz kayıt atlandı: ${type}/${id}/${locale}`, parsed.error);
+    return null;
+  }
+
+  return {
+    id: databaseEntry.id,
+    locale: databaseEntry.locale,
+    frontmatter: parsed.data,
+    rawBody: databaseEntry.rawBody,
+  };
+}
+
+const fileListEntityIds = cache((type: ContentType): string[] => {
   const dirPath = path.join(CONTENT_DIR, type);
   if (!fs.existsSync(dirPath)) return [];
   return fs
@@ -101,123 +133,107 @@ export const listEntityIds = cache((type: ContentType): string[] => {
     .map((dirent) => dirent.name);
 });
 
-// 2. Routing, Slugs & Alternates
-export const listSlugs = cache(
-  (type: ContentType, locale: Locale): string[] => {
-    const ids = listEntityIds(type);
-    const slugs: string[] = [];
+export const listEntityIds = cache(async (type: ContentType): Promise<string[]> => {
+  const databaseEntries = await dbListEntries(type);
+  if (databaseEntries === null) return fileListEntityIds(type);
+  return [...new Set(databaseEntries.map((entry) => entry.id))];
+});
 
-    for (const id of ids) {
-      const entity = getRawEntity(
-        type,
-        id,
-        locale,
-        type === 'services'
-          ? serviceFrontmatterSchema
-          : type === 'blog'
-            ? postFrontmatterSchema
-            : type === 'team'
-              ? teamFrontmatterSchema
-              : type === 'pages'
-                ? pageFrontmatterSchema
-                : legalFrontmatterSchema,
-      );
-      if (entity) {
-        slugs.push(entity.frontmatter.slug);
-      }
-    }
-    return slugs;
+type SlugFrontmatter = { slug: string };
+
+function getSchema(type: ContentType): { parse: (value: unknown) => SlugFrontmatter } {
+  if (type === 'services') return serviceFrontmatterSchema;
+  if (type === 'blog') return postFrontmatterSchema;
+  if (type === 'team') return teamFrontmatterSchema;
+  if (type === 'pages') return pageFrontmatterSchema;
+  return legalFrontmatterSchema;
+}
+
+const fileListSlugs = cache((type: ContentType, locale: Locale): string[] => {
+  const schema = getSchema(type);
+  return fileListEntityIds(type).flatMap((id) => {
+    const entity = fileGetRawEntity(type, id, locale, schema);
+    return entity ? [entity.frontmatter.slug] : [];
+  });
+});
+
+export const listSlugs = cache(
+  async (type: ContentType, locale: Locale): Promise<string[]> => {
+    const databaseSlugs = await dbListSlugs(type, locale);
+    return databaseSlugs ?? fileListSlugs(type, locale);
   },
 );
 
-export const resolveIdBySlug = cache(
+const fileResolveIdBySlug = cache(
   (type: ContentType, locale: Locale, slug: string): string | null => {
-    const ids = listEntityIds(type);
-    for (const id of ids) {
-      const entity = getRawEntity(
-        type,
-        id,
-        locale,
-        type === 'services'
-          ? serviceFrontmatterSchema
-          : type === 'blog'
-            ? postFrontmatterSchema
-            : type === 'team'
-              ? teamFrontmatterSchema
-              : type === 'pages'
-                ? pageFrontmatterSchema
-                : legalFrontmatterSchema,
-      );
-      if (entity && entity.frontmatter.slug === slug) {
-        return id;
-      }
+    const schema = getSchema(type);
+    for (const id of fileListEntityIds(type)) {
+      const entity = fileGetRawEntity(type, id, locale, schema);
+      if (entity?.frontmatter.slug === slug) return id;
     }
     return null;
   },
 );
 
-export const getAlternates = cache(
+export const resolveIdBySlug = cache(
+  async (type: ContentType, locale: Locale, slug: string): Promise<string | null> => {
+    const databaseId = await dbResolveIdBySlug(type, locale, slug);
+    if (databaseId !== null) return databaseId ?? null;
+    return fileResolveIdBySlug(type, locale, slug);
+  },
+);
+
+const fileGetAlternates = cache(
   (type: ContentType, id: string): Record<Locale, string> => {
     const alternates: Partial<Record<Locale, string>> = {};
-
-    for (const locale of routing.locales) {
-      const entity = getRawEntity(
-        type,
-        id,
-        locale,
-        type === 'services'
-          ? serviceFrontmatterSchema
-          : type === 'blog'
-            ? postFrontmatterSchema
-            : type === 'team'
-              ? teamFrontmatterSchema
-              : type === 'pages'
-                ? pageFrontmatterSchema
-                : legalFrontmatterSchema,
-      );
-      if (entity) {
-        alternates[locale] = entity.frontmatter.slug;
-      }
-    }
+    const schema = getSchema(type);
+    const entity = fileGetRawEntity(type, id, LOCALE, schema);
+    if (entity) alternates[LOCALE] = entity.frontmatter.slug;
+    // Tek dil (tr) kalıcı olarak desteklenir; harita her zaman tek anahtarlıdır.
     return alternates as Record<Locale, string>;
   },
 );
 
-// 3. Services API
-export const listServices = cache((locale: Locale): ServiceSummary[] => {
-  const ids = listEntityIds('services');
-  const items: ServiceSummary[] = [];
+export const getAlternates = cache(
+  async (type: ContentType, id: string): Promise<Record<Locale, string>> => {
+    const databaseAlternates = await dbGetAlternates(type, id);
+    if (databaseAlternates === null) return fileGetAlternates(type, id);
+    // Publishing requires all four locales, so a published entry has a complete map.
+    return databaseAlternates as Record<Locale, string>;
+  },
+);
 
-  for (const id of ids) {
-    const raw = getRawEntity('services', id, locale, serviceFrontmatterSchema);
-    if (raw) {
-      items.push({
-        id: raw.id,
-        locale: raw.locale,
-        title: raw.frontmatter.title,
-        description: raw.frontmatter.description,
-        shortDescription: raw.frontmatter.shortDescription,
-        slug: raw.frontmatter.slug,
-        cardImage: raw.frontmatter.cardImage,
-        cardImageAlt: raw.frontmatter.cardImageAlt,
-        cardTags: raw.frontmatter.cardTags,
-        order: raw.frontmatter.order,
-      });
-    }
-  }
+export const listServices = cache(async (locale: Locale): Promise<ServiceSummary[]> => {
+  const ids = await listEntityIds('services');
+  const rows = await Promise.all(
+    ids.map((id) => getRawEntity('services', id, locale, serviceFrontmatterSchema)),
+  );
 
-  return items.sort((a, b) => a.order - b.order);
+  return rows
+    .flatMap((raw) =>
+      raw
+        ? [
+            {
+              id: raw.id,
+              locale: raw.locale,
+              title: raw.frontmatter.title,
+              description: raw.frontmatter.description,
+              shortDescription: raw.frontmatter.shortDescription,
+              slug: raw.frontmatter.slug,
+              cardImage: raw.frontmatter.cardImage,
+              cardImageAlt: raw.frontmatter.cardImageAlt,
+              order: raw.frontmatter.order,
+            },
+          ]
+        : [],
+    )
+    .sort((a, b) => a.order - b.order);
 });
 
 export const getServiceById = cache(
   async (locale: Locale, id: string): Promise<Service | null> => {
-    const raw = getRawEntity('services', id, locale, serviceFrontmatterSchema);
+    const raw = await getRawEntity('services', id, locale, serviceFrontmatterSchema);
     if (!raw) return null;
-
-    const { content } = await compileMDX({
-      source: raw.rawBody,
-      components: mdxComponents,
-    });
 
     return {
       id: raw.id,
@@ -228,81 +244,66 @@ export const getServiceById = cache(
       slug: raw.frontmatter.slug,
       cardImage: raw.frontmatter.cardImage,
       cardImageAlt: raw.frontmatter.cardImageAlt,
-      cardTags: raw.frontmatter.cardTags,
       order: raw.frontmatter.order,
-      frontmatter: raw.frontmatter as ServiceFrontmatter,
-      content,
+      frontmatter: raw.frontmatter,
     };
   },
 );
 
 export const getServiceBySlug = cache(
   async (locale: Locale, slug: string): Promise<Service | null> => {
-    const id = resolveIdBySlug('services', locale, slug);
-    if (!id) return null;
-    return getServiceById(locale, id);
+    const id = await resolveIdBySlug('services', locale, slug);
+    return id ? getServiceById(locale, id) : null;
   },
 );
 
-// 4. Blog Posts API
 export const listPosts = cache(
-  (
+  async (
     locale: Locale,
     opts?: { category?: string; page?: number; limit?: number },
-  ): { items: PostSummary[]; total: number; totalPages: number } => {
-    const ids = listEntityIds('blog');
-    let items: PostSummary[] = [];
+  ): Promise<{ items: PostSummary[]; total: number; totalPages: number }> => {
+    const ids = await listEntityIds('blog');
+    const rows = await Promise.all(
+      ids.map((id) => getRawEntity('blog', id, locale, postFrontmatterSchema)),
+    );
+    let items = rows.flatMap((raw) =>
+      raw
+        ? [
+            {
+              id: raw.id,
+              locale: raw.locale,
+              title: raw.frontmatter.title,
+              description: raw.frontmatter.description,
+              slug: raw.frontmatter.slug,
+              heroImage: raw.frontmatter.heroImage,
+              heroImageAlt: raw.frontmatter.heroImageAlt,
+              publishedAt: raw.frontmatter.publishedAt,
+              updatedAt: raw.frontmatter.updatedAt,
+              category: raw.frontmatter.category,
+              author: raw.frontmatter.author,
+            },
+          ]
+        : [],
+    );
 
-    for (const id of ids) {
-      const raw = getRawEntity('blog', id, locale, postFrontmatterSchema);
-      if (raw) {
-        items.push({
-          id: raw.id,
-          locale: raw.locale,
-          title: raw.frontmatter.title,
-          description: raw.frontmatter.description,
-          slug: raw.frontmatter.slug,
-          heroImage: raw.frontmatter.heroImage,
-          heroImageAlt: raw.frontmatter.heroImageAlt,
-          publishedAt: raw.frontmatter.publishedAt,
-          updatedAt: raw.frontmatter.updatedAt,
-          category: raw.frontmatter.category,
-          author: raw.frontmatter.author,
-        });
-      }
-    }
-
-    if (opts?.category) {
-      items = items.filter((item) => item.category === opts.category);
-    }
-
-    // Sort newest published first
+    if (opts?.category) items = items.filter((item) => item.category === opts.category);
     items.sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+      (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     );
 
     const total = items.length;
     const limit = opts?.limit ?? 10;
     const page = opts?.page ?? 1;
     const totalPages = Math.ceil(total / limit);
-
     const start = (page - 1) * limit;
-    const paginatedItems = items.slice(start, start + limit);
-
-    return { items: paginatedItems, total, totalPages };
+    return { items: items.slice(start, start + limit), total, totalPages };
   },
 );
 
 export const getPostById = cache(
   async (locale: Locale, id: string): Promise<Post | null> => {
-    const raw = getRawEntity('blog', id, locale, postFrontmatterSchema);
+    const raw = await getRawEntity('blog', id, locale, postFrontmatterSchema);
     if (!raw) return null;
-
-    const { content } = await compileMDX({
-      source: raw.rawBody,
-      components: mdxComponents,
-    });
 
     return {
       id: raw.id,
@@ -316,57 +317,53 @@ export const getPostById = cache(
       updatedAt: raw.frontmatter.updatedAt,
       category: raw.frontmatter.category,
       author: raw.frontmatter.author,
-      frontmatter: raw.frontmatter as PostFrontmatter,
-      content,
+      frontmatter: raw.frontmatter,
     };
   },
 );
 
 export const getPostBySlug = cache(
   async (locale: Locale, slug: string): Promise<Post | null> => {
-    const id = resolveIdBySlug('blog', locale, slug);
-    if (!id) return null;
-    return getPostById(locale, id);
+    const id = await resolveIdBySlug('blog', locale, slug);
+    return id ? getPostById(locale, id) : null;
   },
 );
 
-// 5. Team API
-export const listTeam = cache((locale: Locale): TeamSummary[] => {
-  const ids = listEntityIds('team');
-  const items: TeamSummary[] = [];
+export const listTeam = cache(async (locale: Locale): Promise<TeamSummary[]> => {
+  const ids = await listEntityIds('team');
+  const rows = await Promise.all(
+    ids.map((id) => getRawEntity('team', id, locale, teamFrontmatterSchema)),
+  );
 
-  for (const id of ids) {
-    const raw = getRawEntity('team', id, locale, teamFrontmatterSchema);
-    if (raw) {
-      items.push({
-        id: raw.id,
-        locale: raw.locale,
-        name: raw.frontmatter.name,
-        role: raw.frontmatter.role,
-        slug: raw.frontmatter.slug,
-        photo: raw.frontmatter.photo,
-        photoAlt: raw.frontmatter.photoAlt,
-        order: raw.frontmatter.order,
-      });
-    }
-  }
-
-  return items.sort((a, b) => a.order - b.order);
+  return rows
+    .flatMap((raw) =>
+      raw
+        ? [
+            {
+              id: raw.id,
+              locale: raw.locale,
+              name: raw.frontmatter.name,
+              role: raw.frontmatter.role,
+              slug: raw.frontmatter.slug,
+              photo: raw.frontmatter.photo,
+              photoAlt: raw.frontmatter.photoAlt,
+              order: raw.frontmatter.order,
+            },
+          ]
+        : [],
+    )
+    .sort((a, b) => a.order - b.order);
 });
 
 export const getTeamMemberBySlug = cache(
   async (locale: Locale, slug: string): Promise<TeamMember | null> => {
-    const id = resolveIdBySlug('team', locale, slug);
+    const id = await resolveIdBySlug('team', locale, slug);
     if (!id) return null;
 
-    const raw = getRawEntity('team', id, locale, teamFrontmatterSchema);
+    const raw = await getRawEntity('team', id, locale, teamFrontmatterSchema);
     if (!raw) return null;
 
-    const { content } = await compileMDX({
-      source: raw.rawBody,
-      components: mdxComponents,
-    });
-
+    const { content } = await compileMDX({ source: raw.rawBody, components: mdxComponents });
     return {
       id: raw.id,
       locale: raw.locale,
@@ -376,125 +373,115 @@ export const getTeamMemberBySlug = cache(
       photo: raw.frontmatter.photo,
       photoAlt: raw.frontmatter.photoAlt,
       order: raw.frontmatter.order,
-      frontmatter: raw.frontmatter as TeamFrontmatter,
+      frontmatter: raw.frontmatter,
       content,
     };
   },
 );
 
-// 6. Pages API (about, mission, vision, quality)
 export const getPage = cache(
   async (locale: Locale, key: string): Promise<Page | null> => {
-    const raw = getRawEntity('pages', key, locale, pageFrontmatterSchema);
+    const raw = await getRawEntity('pages', key, locale, pageFrontmatterSchema);
     if (!raw) return null;
 
-    const { content } = await compileMDX({
-      source: raw.rawBody,
-      components: mdxComponents,
-    });
-
+    const { content } = await compileMDX({ source: raw.rawBody, components: mdxComponents });
     return {
       id: raw.id,
       locale: raw.locale,
       title: raw.frontmatter.title,
       slug: raw.frontmatter.slug,
-      frontmatter: raw.frontmatter as PageFrontmatter,
+      frontmatter: raw.frontmatter,
       content,
     };
   },
 );
 
-// 7. Legal Pages API
 export const getLegal = cache(
   async (locale: Locale, slug: string): Promise<Legal | null> => {
-    const id = resolveIdBySlug('legal', locale, slug);
+    const id = await resolveIdBySlug('legal', locale, slug);
     if (!id) return null;
 
-    const raw = getRawEntity('legal', id, locale, legalFrontmatterSchema);
+    const raw = await getRawEntity('legal', id, locale, legalFrontmatterSchema);
     if (!raw) return null;
 
-    const { content } = await compileMDX({
-      source: raw.rawBody,
-      components: mdxComponents,
-    });
-
+    const { content } = await compileMDX({ source: raw.rawBody, components: mdxComponents });
     return {
       id: raw.id,
       locale: raw.locale,
       title: raw.frontmatter.title,
       slug: raw.frontmatter.slug,
-      frontmatter: raw.frontmatter as LegalFrontmatter,
+      frontmatter: raw.frontmatter,
       content,
     };
   },
 );
 
-// 8. FAQ JSON API
-export const getFaq = cache((locale: Locale): FaqItem[] => {
+function fileGetFaq(locale: Locale): FaqItem[] {
   const filePath = path.join(CONTENT_DIR, 'faq', `${locale}.json`);
   const content = readFileContent(filePath);
   if (!content) return [];
   try {
-    const parsed = JSON.parse(content);
+    const parsed: unknown = JSON.parse(content);
     return faqListSchema.parse(parsed);
-  } catch (err) {
+  } catch (error: unknown) {
     throw new Error(
-      `[Content Layer Error] Failed parsing faq/${locale}.json: ${String(err)}`,
+      `[Content Layer Error] Failed parsing faq/${locale}.json: ${String(error)}`,
     );
   }
+}
+
+export const getFaq = cache(async (locale: Locale): Promise<FaqItem[]> => {
+  return (await dbGetFaq(locale)) ?? fileGetFaq(locale);
 });
 
-// 9. Gallery JSON API
-export const getGallery = cache((locale: Locale): GalleryItem[] => {
-  const imagesPath = path.join(CONTENT_DIR, 'gallery', 'images.json');
-  const altPath = path.join(CONTENT_DIR, 'gallery', `alt.${locale}.json`);
-
-  const imagesContent = readFileContent(imagesPath);
-  const altContent = readFileContent(altPath);
-
+function fileGetGallery(locale: Locale): GalleryItem[] {
+  const imagesContent = readFileContent(path.join(CONTENT_DIR, 'gallery', 'images.json'));
+  const altContent = readFileContent(
+    path.join(CONTENT_DIR, 'gallery', `alt.${locale}.json`),
+  );
   if (!imagesContent || !altContent) return [];
 
-  const images: string[] = JSON.parse(imagesContent);
-  const alts: Record<string, string> = JSON.parse(altContent);
-
-  return images.map((image) => ({
-    image,
-    alt: alts[image] || '',
-  }));
-});
-
-// 10. Clinic JSON API
-export const getClinic = cache((): Clinic => {
-  const filePath = path.join(CONTENT_DIR, 'clinic.json');
-  const content = readFileContent(filePath);
-  if (!content) {
-    throw new Error('[Content Layer Error] clinic.json file not found');
+  const images: unknown = JSON.parse(imagesContent);
+  const alts: unknown = JSON.parse(altContent);
+  if (!Array.isArray(images) || !alts || typeof alts !== 'object' || Array.isArray(alts)) {
+    throw new Error(`[Content Layer Error] Failed parsing gallery/${locale}`);
   }
-  const parsed = JSON.parse(content);
-  return clinicSchema.parse(parsed);
+
+  return images.flatMap((image) => {
+    if (typeof image !== 'string') return [];
+    const alt = Reflect.get(alts, image);
+    return [{ image, alt: typeof alt === 'string' ? alt : '' }];
+  });
+}
+
+export const getGallery = cache(async (locale: Locale): Promise<GalleryItem[]> => {
+  return (await dbGetGallery(locale)) ?? fileGetGallery(locale);
 });
 
-/**
- * Anasayfa bölüm verisi. Yapılandırılmış olduğu için MDX değil JSON;
- * okuma yolu diğerleriyle aynı: dosya → zod → tip güvenli nesne.
- */
-export const getHome = cache((locale: Locale): Home => {
-  const filePath = path.join(CONTENT_DIR, 'home', `${locale}.json`);
+function fileGetClinic(): Clinic {
+  const content = readFileContent(path.join(CONTENT_DIR, 'clinic.json'));
+  if (!content) throw new Error('[Content Layer Error] clinic.json file not found');
+  const parsed: unknown = JSON.parse(content);
+  return clinicSchema.parse(parsed);
+}
 
+export const getClinic = cache(async (): Promise<Clinic> => {
+  return (await dbGetClinic()) ?? fileGetClinic();
+});
+
+function fileGetHome(locale: Locale): Home {
+  const filePath = path.join(CONTENT_DIR, 'home', `${locale}.json`);
   if (!fs.existsSync(filePath)) {
     throw new Error(`[Content Layer Error] content/home/${locale}.json bulunamadı`);
   }
+  const parsed: unknown = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  return homeSchema.parse(parsed);
+}
 
-  return homeSchema.parse(JSON.parse(fs.readFileSync(filePath, 'utf8')));
+export const getHome = cache(async (locale: Locale): Promise<Home> => {
+  return (await dbGetHome(locale)) ?? fileGetHome(locale);
 });
 
-/**
- * Liste sayfası çerçeve metni.
- *
- * Dönüş tipi anahtara göre daralır: `services` ek olarak `approach` taşır,
- * `blog` taşımaz. Tek bir geniş tip döndürülürse blog listesi olmayan bir
- * alanı okumaya çalışır ve çalışma zamanında patlar.
- */
 type ListingResultMap = {
   services: ServicesListing;
   blog: ListingBase;
@@ -505,18 +492,19 @@ type ListingResultMap = {
   contact: ContactListing;
 };
 
+function fileGetListing<K extends ListingKey>(key: K, locale: Locale): ListingResultMap[K] {
+  const filePath = path.join(CONTENT_DIR, 'listing', key, `${locale}.json`);
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`[Content Layer Error] content/listing/${key}/${locale}.json bulunamadı`);
+  }
+
+  const parsed: unknown = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  // The selected schema and generic key share the same ListingResultMap member.
+  return listingSchemas[key].parse(parsed) as ListingResultMap[K];
+}
+
 export const getListing = cache(
-  <K extends ListingKey>(key: K, locale: Locale): ListingResultMap[K] => {
-    const filePath = path.join(CONTENT_DIR, 'listing', key, `${locale}.json`);
-
-    if (!fs.existsSync(filePath)) {
-      throw new Error(
-        `[Content Layer Error] content/listing/${key}/${locale}.json bulunamadı`,
-      );
-    }
-
-    return listingSchemas[key].parse(
-      JSON.parse(fs.readFileSync(filePath, 'utf8')),
-    ) as ListingResultMap[K];
+  async <K extends ListingKey>(key: K, locale: Locale): Promise<ListingResultMap[K]> => {
+    return (await dbGetListing(key, locale)) ?? fileGetListing(key, locale);
   },
 );

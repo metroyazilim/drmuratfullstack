@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Menu, Phone, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/strings';
 import { NavLink } from './nav-link';
-import { LanguageSwitcher } from './language-switcher';
 import { isNavGroup, mainNav } from '@/lib/navigation';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 
 type MobileMenuProps = {
   phone: string;
@@ -92,8 +91,7 @@ export function MobileMenu({ phone, phoneFormatted }: MobileMenuProps) {
           </nav>
 
           <div className="border-border-default mt-6 space-y-3 border-t pt-6">
-            <LanguageSwitcher />
-            <Link href="/appointment" onClick={close} className="block">
+            <Link href="/randevu-al" onClick={close} className="block">
               <Button variant="primary" className="w-full">
                 {tHeader('appointmentCta')}
               </Button>

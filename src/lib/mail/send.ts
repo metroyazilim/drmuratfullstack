@@ -16,8 +16,10 @@ export async function sendFormMails(options: {
   /** MAIL_TO tanımsızsa kullanılacak klinik adresi (clinic.json künyesi). */
   fallbackTo?: string;
 }): Promise<SendResult> {
-  const transport = getTransport();
-  const config = getMailConfig(options.fallbackTo);
+  const [transport, config] = await Promise.all([
+    getTransport(),
+    getMailConfig(options.fallbackTo),
+  ]);
 
   if (!transport || !config) {
     return { clinicSent: false, userSent: false };

@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import Image from 'next/image';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/strings';
 import { cn } from '@/lib/utils/cn';
 import type { GalleryItem } from '@/lib/content/types';
 

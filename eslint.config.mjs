@@ -10,7 +10,7 @@ const eslintConfig = [
         {
           name: 'next/link',
           message:
-            'Please import `Link` from `@/lib/i18n` or `@/i18n/navigation` instead of `next/link`.',
+            'Please import `Link` from `@/lib/site-routes` instead of `next/link`.',
         },
       ],
     },
@@ -27,8 +27,35 @@ const eslintConfig = [
             {
               name: 'next/link',
               message:
-                'Please import `Link` from `@/lib/i18n` or `@/i18n/navigation` instead of `next/link`.',
+                'Please import `Link` from `@/lib/site-routes` instead of `next/link`.',
             },
+            {
+              name: 'fs',
+              message:
+                '`fs` can only be imported within `src/lib/content` (Invariant 1).',
+            },
+            {
+              name: 'node:fs',
+              message:
+                '`node:fs` can only be imported within `src/lib/content` (Invariant 1).',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    /**
+     * Yönetim paneli bilinçli olarak site dilinden bağımsızdır: `/manage`
+     * altındaki adresler public site yollarından ayrıdır. `fs` yasağı panelde
+     * aynen geçerli kalır.
+     */
+    files: ['src/app/manage/**/*.{ts,tsx}', 'src/components/admin/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
             {
               name: 'fs',
               message:

@@ -1,3 +1,5 @@
+import { RichText } from '@/components/RichText';
+
 import type { PageFrontmatter } from '@/lib/content/types';
 
 type TimelineProps = NonNullable<PageFrontmatter['timeline']>;
@@ -17,8 +19,11 @@ export function Timeline({ rows }: Pick<TimelineProps, 'rows'>) {
           <dt className="text-accent-primary text-base font-bold">
             {row.label}
           </dt>
-          <dd className="text-text-muted text-sm leading-relaxed">
-            {row.description}
+          <dd>
+            <RichText
+              html={row.description}
+              className="text-text-muted text-sm leading-relaxed"
+            />
           </dd>
         </div>
       ))}

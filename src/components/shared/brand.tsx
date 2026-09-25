@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import { getClinic } from '@/lib/content';
 import { cn } from '@/lib/utils/cn';
 
@@ -19,8 +19,8 @@ export const BRAND_LOGO = '/images/brand/logo.png';
  * boyamak yerine zemin verilir, çünkü mührün içindeki ince çizgiler
  * tek renge düşünce kayboluyor.
  */
-export function Brand({ className, inverse = false }: BrandProps) {
-  const clinic = getClinic();
+export async function Brand({ className, inverse = false }: BrandProps) {
+  const clinic = await getClinic();
 
   return (
     <Link

@@ -3,6 +3,7 @@ import { Section } from '@/components/ui/section';
 import { SectionLabel } from '@/components/ui/section-label';
 import { StepCard } from '@/components/shared/step-card';
 import { Reveal } from '@/components/shared/reveal';
+import { RichText } from '@/components/RichText';
 import type { Home } from '@/lib/content/types';
 
 export function ProcessSteps({ process }: { process: Home['process'] }) {
@@ -22,7 +23,7 @@ export function ProcessSteps({ process }: { process: Home['process'] }) {
               <StepCard
                 index={index}
                 title={step.title}
-                description={step.description}
+                description={<RichText html={step.description} />}
               />
             </Reveal>
           ))}

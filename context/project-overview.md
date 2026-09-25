@@ -85,20 +85,12 @@ WhatsApp / Ara / Randevu aksiyonlarıyla bu üç boşluğu kapatır.
 - **Yasal:** KVKK Aydınlatma Metni, Gizlilik Politikası, Çerez
   Politikası (yeni; mevcut sitede yok, form toplama için gerekli).
 
-### Çok Dillilik (i18n)
+### Dil
 
-- Dört dil: `tr` (varsayılan), `en`, `ar`, `ru`.
-- Tüm diller URL prefix'li: `/tr/...`, `/en/...`, `/ar/...`,
-  `/ru/...`. Kök `/` isteği `/tr`'ye yönlenir.
-- Slug'lar dile göre çevrilir (`/tr/hizmetler` ↔ `/en/services`
-  ↔ `/ar/الخدمات` ↔ `/ru/uslugi`), eşleme tek bir slug haritasında
-  tutulur.
-- Arapça'da `dir="rtl"`; layout, ikon yönleri ve tipografi RTL'e
-  göre çalışır.
-- Header'da dil değiştirici; kullanıcıyı aynı sayfanın karşılığına
-  götürür, karşılığı yoksa o dilin anasayfasına.
-- İçerik dört dilde de eksiksiz doldurulur (AI çevirisi + tıbbi
-  terim gözden geçirmesi).
+- Public site yalnızca Türkçe yayınlanır.
+- URL'ler locale prefix kullanmaz; canonical yollar doğrudan
+  `/hakkimizda`, `/hizmetler`, `/blog` gibi Türkçe route'lardır.
+- Admin paneli `/manage` altında public route'lardan bağımsız çalışır.
 
 ### SEO
 

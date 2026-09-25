@@ -1,8 +1,7 @@
 import { getClinic, getFaq, listPosts, listServices } from '@/lib/content';
 import { localeUrls } from '@/lib/seo/alternates';
 import { IS_PRODUCTION_DEPLOY, SITE_NAME, absoluteUrl } from '@/lib/seo/config';
-import { getPathname } from '@/i18n/navigation';
-import type { Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/site-routes';
 
 /**
  * /llms.txt — llmstxt.org sözleşmesi.
@@ -12,8 +11,8 @@ import type { Locale } from '@/lib/i18n';
  * cevaplarken sayfaları tek tek gezmek yerine bu özeti okur. İçerikten
  * TÜRETİLİR; elle güncellenen ikinci bir gerçek kaynağı olmaz.
  *
- * Dil: Türkçe (birincil pazar, x-default). Diğer diller hreflang üzerinden
- * zaten keşfediliyor; dört dili tek dosyaya yığmak özeti okunmaz yapardı.
+ * Dil: Türkçe. Public site tek dil olarak yayınlanır; tüm canonical URL'ler
+ * doğrudan Türkçe route'lara işaret eder.
  */
 export const dynamic = 'force-static';
 
@@ -22,34 +21,28 @@ const MAX_POSTS = 12;
 const MAX_FAQ = 8;
 
 function serviceUrl(slug: string): string {
-  return absoluteUrl(
-    getPathname({
-      locale: LOCALE,
-      href: { pathname: '/services/[slug]', params: { slug } },
-    }),
-  );
+  return absoluteUrl(`/hizmetler/${slug}`);
 }
 
 function postUrl(slug: string): string {
-  return absoluteUrl(
-    getPathname({
-      locale: LOCALE,
-      href: { pathname: '/blog/[slug]', params: { slug } },
-    }),
-  );
+  return absoluteUrl(`/blog/${slug}`);
 }
 
-function build(): string {
-  const clinic = getClinic();
-  const services = listServices(LOCALE);
-  const { items: posts } = listPosts(LOCALE, { limit: MAX_POSTS });
-  const faq = getFaq(LOCALE).slice(0, MAX_FAQ);
+async function build(): Promise<string> {
+  const [clinic, services, postsResult, faqResult] = await Promise.all([
+    getClinic(),
+    listServices(LOCALE),
+    listPosts(LOCALE, { limit: MAX_POSTS }),
+    getFaq(LOCALE),
+  ]);
+  const posts = postsResult.items;
+  const faq = faqResult.slice(0, MAX_FAQ);
 
   const url = (href: Parameters<typeof localeUrls>[0]) =>
-    localeUrls(href)[LOCALE];
+    localeUrls(href).tr;
 
   const lines: string[] = [
-    `# ${SITE_NAME.tr}`,
+    `# ${SITE_NAME}`,
     '',
     `> ${clinic.description}`,
     '',
@@ -61,7 +54,7 @@ function build(): string {
     `- **Telefon / WhatsApp:** ${clinic.contact.phoneFormatted} (${clinic.contact.phone})`,
     `- **E-posta:** ${clinic.contact.email}`,
     `- **Randevu:** ${url('/appointment')}`,
-    `- **Diller:** Türkçe, İngilizce, Arapça, Rusça (aynı içerik /tr, /en, /ar, /ru altında)`,
+    `- **Dil:** Türkçe`,
     '',
     '## Hizmetler',
     '',
@@ -107,10 +100,10 @@ function build(): string {
   return lines.join('\n');
 }
 
-export function GET(): Response {
+export async function GET(): Promise<Response> {
   // Preview dağıtımı taranmıyor; oradaki llms.txt de içerik sızdırmasın.
   const body = IS_PRODUCTION_DEPLOY
-    ? build()
+    ? await build()
     : '# Preview dağıtımı\n\nBu dağıtım indekslenmez.\n';
 
   return new Response(body, {

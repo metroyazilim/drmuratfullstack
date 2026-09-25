@@ -55,27 +55,20 @@
 - `next.config.ts` içinde `images.formats` AVIF/WebP açık, harici
   görsel host'ları açıkça beyaz listelenir.
 
-## i18n
+## Site language and routes
 
-- Desteklenen diller `lib/i18n/config.ts` içinde tek yerde tanımlı:
-  `tr` (varsayılan), `en`, `ar`, `ru`.
-- Arayüz metni `messages/{locale}.json` içinde; anahtarlar
-  nokta ile bölümlenir (`nav.services`, `form.appointment.submit`).
-  Anahtar adı **İngilizce ve anlamsal**, metnin kendisi değil.
-- Sayfa/blog içeriği `messages/` içine konmaz; `content/{locale}/`
-  altındadır.
-- Dahili bağlantı daima `localizedHref(locale, route, params)`
-  üzerinden; `<Link href="/tr/hizmetler">` gibi elle yazım yasak.
-- Yön duyarlı stiller mantıksal özelliklerle yazılır:
-  `ms-4` / `me-4` / `ps-6` / `pe-6` / `text-start` / `text-end`.
-  `ml-*`, `mr-*`, `text-left`, `text-right` kullanılmaz — Arapça
-  RTL'de kırılır.
-- Yön duyarlı ikonlar (ok, chevron) RTL'de `rtl:rotate-180` ile
-  çevrilir.
-- Tarih, sayı ve para biçimlendirmesi `next-intl` formatter'ları ile
-  yapılır; elle string birleştirilmez.
-- Bir dile içerik eklendiğinde diğer üçü aynı commit'te eklenir.
-  Eksik anahtar build'de hata verir (fallback ile gizlenmez).
+- Public site yalnızca Türkçe yayınlanır; ayrı locale routing, dil
+  değiştirici veya RTL katmanı bulunmaz.
+- Arayüz metinleri `src/messages/tr.json` içindedir; anahtarlar nokta
+  ile bölümlenir (`nav.services`, `form.appointment.submit`).
+- Sayfa/blog içeriği mesaj dosyalarına konmaz; `content/` ve CMS
+  adaptöründen okunur.
+- Dahili bağlantılar `@/lib/site-routes` içindeki canonical `Link`
+  wrapper'ı üzerinden verilir; admin URL'leri public route'larla
+  karıştırılmaz.
+- Türkçe metinlerde tarih ve sayı biçimlendirmesi `tr-TR` ile yapılır.
+- RTL'e özel sınıflar ve çoklu dil completeness kontrolleri public
+  rendering için kullanılmaz.
 
 ## Content ve MDX
 

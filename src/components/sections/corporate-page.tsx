@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from '@/lib/strings';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { SectionLabel } from '@/components/ui/section-label';
@@ -10,7 +10,8 @@ import { PageBanner } from '@/components/shared/page-banner';
 import { CtaBand } from '@/components/shared/cta-band';
 import { JsonLd } from '@/components/shared/json-ld';
 import { breadcrumbSchema } from '@/lib/seo/schema';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
+import { RichText } from '@/components/RichText';
 import type { Crumb } from '@/components/shared/breadcrumbs';
 import type { Page, Legal } from '@/lib/content/types';
 
@@ -101,7 +102,7 @@ export async function CorporatePage({
                   key={item.title}
                   icon={item.icon}
                   title={item.title}
-                  description={item.description}
+                  description={<RichText html={item.description} />}
                 />
               ))}
             </div>

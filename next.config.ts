@@ -1,10 +1,22 @@
-import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
 
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+const remoteImagePatterns = [new URL('https://*.r2.dev/**')];
+const r2PublicBaseUrl = process.env.R2_PUBLIC_BASE_URL?.trim();
+if (r2PublicBaseUrl) {
+  const pattern = new URL(r2PublicBaseUrl);
+  pattern.pathname = `${pattern.pathname.replace(/\/+$/, '')}/**`;
+  pattern.search = '';
+  pattern.hash = '';
+  remoteImagePatterns.push(pattern);
+}
 
 const nextConfig: NextConfig = {
+  // Docker/Dokploy hedefi: çalışma zamanı imajının tüm node_modules'e ihtiyaç duymaması için
+  // kendi kendine yeten sunucu paketi (.next/standalone) üretilir.
+  output: 'standalone',
   images: {
+    remotePatterns: remoteImagePatterns,
     formats: ['image/avif', 'image/webp'],
     /**
      * Optimize edilmiş görseller 1 yıl önbellekte kalır.
@@ -14,6 +26,21 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31_536_000,
   },
   poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        source: '/:locale(tr|en|ar|ru)',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/:locale(tr|en|ar|ru)/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   compress: true,
 
   /**
@@ -63,4 +90,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

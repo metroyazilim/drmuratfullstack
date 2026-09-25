@@ -8,6 +8,7 @@ import {
   UserCheck,
   type LucideIcon,
 } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 /** Şemadaki z.enum ile aynı küme — çalışma zamanında kırılmaz. */
 const icons: Record<string, LucideIcon> = {
@@ -23,7 +24,7 @@ type FeatureCardProps = {
   /** Verilmezse tik işareti kullanılır (hizmet detayı özellik kartları). */
   icon?: string;
   title: string;
-  description: string;
+  description: ReactNode;
 };
 
 export function FeatureCard({ icon, title, description }: FeatureCardProps) {
@@ -35,9 +36,9 @@ export function FeatureCard({ icon, title, description }: FeatureCardProps) {
         <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
       </span>
       <h3 className="text-text-primary mt-5 text-base font-semibold">{title}</h3>
-      <p className="text-text-muted mt-2 text-sm leading-relaxed">
+      <div className="text-text-muted mt-2 text-sm leading-relaxed">
         {description}
-      </p>
+      </div>
     </div>
   );
 }

@@ -1,13 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { getAlternates, getPostBySlug, listEntityIds } from '@/lib/content';
-import type { ContentType } from '@/lib/content/types';
-import { routing, type Locale } from '@/lib/i18n';
+import { LOCALE } from '@/lib/site-routes';
 import { localeUrls, localeUrlsFromSlugs } from '@/lib/seo/alternates';
-import { X_DEFAULT_LOCALE } from '@/lib/seo/config';
 
 type StaticRoute = Parameters<typeof localeUrls>[0];
 
-/** Dile göre çevrilen statik yollar — next-intl pathnames ile aynı küme. */
 const staticRoutes = [
   '/',
   '/about',
@@ -30,21 +27,17 @@ const detailRoutes = [
   { type: 'legal', pathname: '/legal/[slug]' },
 ] as const;
 
-/**
- * Her dil kendi girişini alır ve alternates dört dili + x-default'u listeler.
- * priority / changeFrequency yazılmaz — Google bu alanları yok sayıyor.
- */
+/** Tek dil (tr): her yol tek bir sitemap girişi alır, alternates yok. */
 function entries(
-  urls: Record<Locale, string>,
+  urls: Record<'tr', string>,
   lastModified?: string,
 ): MetadataRoute.Sitemap {
-  return routing.locales.map((locale) => ({
-    url: urls[locale],
-    ...(lastModified ? { lastModified: new Date(lastModified) } : {}),
-    alternates: {
-      languages: { ...urls, 'x-default': urls[X_DEFAULT_LOCALE] },
+  return [
+    {
+      url: urls.tr,
+      ...(lastModified ? { lastModified: new Date(lastModified) } : {}),
     },
-  }));
+  ];
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -54,27 +47,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     items.push(...entries(localeUrls(route)));
   }
 
-  for (const { type, pathname } of detailRoutes) {
-    for (const id of listEntityIds(type as ContentType)) {
-      const slugs = getAlternates(type as ContentType, id);
-      if (!slugs) continue;
-
-      const lastModified =
-        type === 'blog' ? await blogLastModified(slugs) : undefined;
-
-      items.push(...entries(localeUrlsFromSlugs(pathname, slugs), lastModified));
-    }
-  }
+  const detailItems = await Promise.all(
+    detailRoutes.map(async ({ type, pathname }) => {
+      const ids = await listEntityIds(type);
+      return Promise.all(
+        ids.map(async (id) => {
+          const slugs = await getAlternates(type, id);
+          const lastModified =
+            type === 'blog' ? await blogLastModified(slugs) : undefined;
+          return entries(localeUrlsFromSlugs(pathname, slugs), lastModified);
+        }),
+      );
+    }),
+  );
+  items.push(...detailItems.flat(2));
 
   return items;
 }
 
 async function blogLastModified(
-  slugs: Record<Locale, string>,
+  slugs: Record<'tr', string>,
 ): Promise<string | undefined> {
-  const slug = slugs[X_DEFAULT_LOCALE];
+  const slug = slugs.tr;
   if (!slug) return undefined;
 
-  const post = await getPostBySlug(X_DEFAULT_LOCALE, slug);
+  const post = await getPostBySlug(LOCALE, slug);
   return post?.updatedAt ?? post?.publishedAt;
 }

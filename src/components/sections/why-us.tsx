@@ -2,6 +2,7 @@ import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { FeatureCard } from '@/components/shared/feature-card';
 import { Reveal } from '@/components/shared/reveal';
+import { RichText } from '@/components/RichText';
 import type { Home } from '@/lib/content/types';
 
 export function WhyUs({ whyUs }: { whyUs: Home['whyUs'] }) {
@@ -18,7 +19,7 @@ export function WhyUs({ whyUs }: { whyUs: Home['whyUs'] }) {
               <FeatureCard
                 icon={item.icon}
                 title={item.title}
-                description={item.description}
+                description={<RichText html={item.description} />}
               />
             </Reveal>
           ))}

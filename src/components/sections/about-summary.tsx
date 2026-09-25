@@ -3,8 +3,9 @@ import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { SectionLabel } from '@/components/ui/section-label';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/lib/i18n';
+import { Link } from '@/lib/site-routes';
 import { Reveal } from '@/components/shared/reveal';
+import { RichText } from '@/components/RichText';
 import type { Home } from '@/lib/content/types';
 
 export function AboutSummary({ about }: { about: Home['about'] }) {
@@ -17,9 +18,10 @@ export function AboutSummary({ about }: { about: Home['about'] }) {
             <h2 className="text-text-primary mt-3 text-2xl font-bold tracking-tight md:text-4xl">
               {about.title}
             </h2>
-            <p className="text-text-muted mt-5 text-sm leading-relaxed md:text-base">
-              {about.description}
-            </p>
+            <RichText
+              html={about.description}
+              className="text-text-muted mt-5 text-sm leading-relaxed md:text-base"
+            />
 
             <ul className="mt-6 flex flex-wrap gap-2">
               {about.chips.map((chip) => (

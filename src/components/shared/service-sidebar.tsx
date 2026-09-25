@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/lib/i18n';
+import { getTranslations } from '@/lib/strings';
+import { Link } from '@/lib/site-routes';
 import { cn } from '@/lib/utils/cn';
 import type { ServiceSummary } from '@/lib/content/types';
 
@@ -26,7 +26,7 @@ export async function ServiceSidebar({
           return (
             <li key={service.id} className="border-border-default border-b last:border-b-0">
               <Link
-                href={{ pathname: '/services/[slug]', params: { slug: service.slug } }}
+                href={`/hizmetler/${service.slug}`}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'block py-2.5 text-sm transition-colors',
